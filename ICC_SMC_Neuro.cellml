@@ -1024,9 +1024,9 @@
         <variable name="S_iCa50" public_interface="out" units="dimensionless"/>
         <variable name="S_iSK" public_interface="out" units="dimensionless"/>
         <variable name="S_eIP3" public_interface="out" units="dimensionless"/>
-        <variable initial_value="3.17" name="a" units="dimensionless"/>
-        <variable initial_value="1.17" name="b" units="dimensionless"/>
-        <variable initial_value="5" name="c" units="dimensionless"/>
+        <variable initial_value="3.17" name="p_iICC" units="dimensionless"/>
+        <variable initial_value="1.17" name="p_iSMC" units="dimensionless"/>
+        <variable initial_value="5" name="p_e" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -1042,7 +1042,7 @@
                                 <times/>
                                 <apply>
                                     <minus/>
-                                    <ci>a</ci>
+                                    <ci>p_iICC</ci>
                                 </apply>
                                 <ci>x_i</ci>
                             </apply>
@@ -1055,7 +1055,7 @@
                             <exp/>
                             <apply>
                                 <minus/>
-                                <ci>a</ci>
+                                <ci>p_iICC</ci>
                             </apply>
                         </apply>
                     </apply>
@@ -1075,7 +1075,7 @@
                                 <times/>
                                 <apply>
                                     <minus/>
-                                    <ci>b</ci>
+                                    <ci>p_iSMC</ci>
                                 </apply>
                                 <ci>x_i</ci>
                             </apply>
@@ -1088,7 +1088,7 @@
                             <exp/>
                             <apply>
                                 <minus/>
-                                <ci>b</ci>
+                                <ci>p_iSMC</ci>
                             </apply>
                         </apply>
                     </apply>
@@ -1108,7 +1108,7 @@
                                 <times/>
                                 <apply>
                                     <minus/>
-                                    <ci>c</ci>
+                                    <ci>p_e</ci>
                                 </apply>
                                 <ci>x_e</ci>
                             </apply>
@@ -1121,7 +1121,7 @@
                             <exp/>
                             <apply>
                                 <minus/>
-                                <ci>c</ci>
+                                <ci>p_e</ci>
                             </apply>
                         </apply>
                     </apply>
@@ -1260,7 +1260,7 @@
         <variable name="Ca_i" private_interface="out" public_interface="in" units="millimolar"/>
         <variable name="E_K" units="voltage_units"/>
         <variable initial_value="3.5" name="G_max_SK" units="conductance_units"/>
-        <variable name="S_i" public_interface="in" units="dimensionless"/>
+        <variable name="S_iSK" public_interface="in" units="dimensionless"/>
         <variable name="Vm_SM" private_interface="out" public_interface="in" units="voltage_units"/>
         <variable name="x_SK_SM" private_interface="in" units="dimensionless"/>
         <variable name="RToF" public_interface="in" units="voltage_units"/>
@@ -1292,7 +1292,7 @@
                     <times/>
                     <ci>G_max_SK</ci>
                     <ci>x_SK_SM</ci>
-                    <ci>S_i</ci>
+                    <ci>S_iSK</ci>
                     <apply>
                         <minus/>
                         <ci>Vm_SM</ci>
@@ -3417,25 +3417,29 @@
         <variable name="P_NSCC" private_interface="in" units="dimensionless"/>
         <variable name="Vm" private_interface="out" public_interface="in" units="voltage_units"/>
         <variable name="E_NSCC" public_interface="in" units="voltage_units"/>
-        <variable name="S_i" public_interface="in" units="dimensionless"/>
-        <variable name="inh_scale_NSCC" units="dimensionless"/>
+        <variable name="S_iNSCC" public_interface="in" units="dimensionless"/>
+															   
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
-                <ci>inh_scale_NSCC</ci>
-                <apply>
-                    <minus/>
-                    <cn cellml:units="dimensionless">1</cn>
-                    <ci>S_i</ci>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
+									   
+					   
+							
+														   
+								
+						
+					
+				   
+					 
                 <ci>I_NSCC</ci>
                 <apply>
                     <times/>
                     <ci>g_NSCC</ci>
-                    <ci>inh_scale_NSCC</ci>
+                    <apply>
+                        <minus/>
+                        <cn cellml:units="dimensionless">1</cn>
+                        <ci>S_iNSCC</ci>
+                    </apply>
                     <ci>P_NSCC</ci>
                     <apply>
                         <minus/>
@@ -3469,8 +3473,8 @@
         <variable initial_value="2" name="Ano1_n" units="dimensionless"/>
         <variable initial_value="-100" name="Ano1_Vh" units="voltage_units"/>
         <variable initial_value="0.0156" name="Ano1_s" units="voltage_units"/>
-        <variable name="S_i" public_interface="in" units="dimensionless"/>
-        <variable name="inh_Ano1" public_interface="out" units="dimensionless"/>
+        <variable name="S_iAno1" public_interface="in" units="dimensionless"/>
+        <variable name="h_Ano1" public_interface="out" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -3727,13 +3731,13 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>inh_Ano1</ci>
+                <ci>h_Ano1</ci>
                 <apply>
                     <divide/>
                     <apply>
                         <times/>
                         <ci>d_Ano1</ci>
-                        <ci>S_i</ci>
+                        <ci>S_iAno1</ci>
                         <cn cellml:units="dimensionless">1</cn>
                     </apply>
                     <apply>
@@ -3786,8 +3790,8 @@
         <variable name="E_Cl" public_interface="in" units="voltage_units"/>
         <variable name="I_Ano1" public_interface="out" units="current_units"/>
         <variable name="d_Ano1" private_interface="in" public_interface="out" units="dimensionless"/>
-        <variable name="inh_Ano1" private_interface="in" units="dimensionless"/>
-        <variable name="S_i" private_interface="out" public_interface="in" units="dimensionless"/>
+        <variable name="h_Ano1" private_interface="in" units="dimensionless"/>
+        <variable name="S_iAno1" private_interface="out" public_interface="in" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -3798,7 +3802,7 @@
                     <apply>
                         <minus/>
                         <ci>d_Ano1</ci>
-                        <ci>inh_Ano1</ci>
+                        <ci>h_Ano1</ci>
                     </apply>
                     <apply>
                         <minus/>
@@ -4588,12 +4592,12 @@
         <map_components component_1="d_Ano1" component_2="I_Ano1"/>
         <map_variables variable_1="Vm" variable_2="Vm"/>
         <map_variables variable_1="d_Ano1" variable_2="d_Ano1"/>
-        <map_variables variable_1="inh_Ano1" variable_2="inh_Ano1"/>
+        <map_variables variable_1="h_Ano1" variable_2="h_Ano1"/>
         <map_variables variable_1="time" variable_2="time"/>
         <map_variables variable_1="volCyto" variable_2="volCyto"/>
         <map_variables variable_1="J_SOC" variable_2="J_SOC"/>
         <map_variables variable_1="Ca_i" variable_2="Ca_i"/>
-        <map_variables variable_1="S_i" variable_2="S_i"/>
+        <map_variables variable_1="S_iAno1" variable_2="S_iAno1"/>
     </connection>
     <connection>
         <map_components component_1="Nernst" component_2="I_Ano1"/>
@@ -4615,14 +4619,14 @@
         <map_variables variable_1="I_Ano1" variable_2="I_Ano1"/>
         <map_variables variable_1="Vm" variable_2="Vm"/>
         <map_variables variable_1="Ca_i" variable_2="Ca_i"/>
-        <map_variables variable_1="S_i" variable_2="S_iAno1"/>
+        <map_variables variable_1="S_iAno1" variable_2="S_iAno1"/>
     </connection>
     <connection>
         <map_components component_1="I_NSCC" component_2="ICC_Membrane"/>
         <map_variables variable_1="Vm" variable_2="Vm"/>
         <map_variables variable_1="I_NSCC" variable_2="I_NSCC"/>
         <map_variables variable_1="Ca_i" variable_2="Ca_i"/>
-        <map_variables variable_1="S_i" variable_2="S_iNSCC"/>
+        <map_variables variable_1="S_iNSCC" variable_2="S_iNSCC"/>
     </connection>
     <connection>
         <map_components component_1="Ca_er" component_2="ICC_Membrane"/>
@@ -4890,7 +4894,7 @@
         <map_variables variable_1="RToF" variable_2="RToF"/>
         <map_variables variable_1="K_o" variable_2="K_o"/>
         <map_variables variable_1="T_correction_BK" variable_2="T_correction_BK"/>
-        <map_variables variable_1="S_i" variable_2="S_iSK"/>
+        <map_variables variable_1="S_iSK" variable_2="S_iSK"/>
     </connection>
     <connection>
         <map_components component_1="I_bk_SM" component_2="SM_Membrane"/>
