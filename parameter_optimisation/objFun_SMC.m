@@ -2,6 +2,11 @@ function o = objFun_SMC(effect_vals)
 %%% objFun_SMC.m
 %%% Omkar N. Athavale, May 2023
 %%% Calculate objective function for Step 2 of optimisation procedure (SMC inhibitory component)
+%%% INPUTS
+%%% effect_vals: 1 x 3 array of k_iCa50, k_iSK, p_iSMC
+%%%
+%%% OUTPUTS
+%%% o: objective function value
 
 % p_iSMC cannot be 0
 if effect_vals(end) == 0

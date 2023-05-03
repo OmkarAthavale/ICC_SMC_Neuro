@@ -2,6 +2,11 @@ function o = objFun_ICC(effect_vals)
 %%% objFun_ICC.m
 %%% Omkar N. Athavale, May 2023
 %%% Calculate objective function for Step 1 of optimisation procedure (ICC inhibitory component)
+%%% INPUTS
+%%% effect_vals: 1 x 3 array of k_iAno1, k_iNSCC, p_iICC
+%%%
+%%% OUTPUTS
+%%% o: objective function value
 
 % p_iICC cannot be 0
 if effect_vals(end) == 0
