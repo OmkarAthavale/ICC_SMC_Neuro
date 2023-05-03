@@ -132,6 +132,9 @@
         <unit exponent="2" prefix="micro" units="meter"/>
         <unit exponent="-1" units="second"/>
     </units>
+    <units name="kilopascals">
+        <unit prefix="kilo" units="pascal"/>
+    </units>
     <component name="Time">
         <variable cmeta:id="time" name="time" private_interface="out" public_interface="out" units="time_units"/>
     </component>
@@ -948,13 +951,13 @@
         </math>
     </component>
     <component name="active_tension">
-        <variable name="T" units="pascal"/>
-        <variable initial_value="0.195" name="Ca50_0" units="micromolar"/>
-        <variable name="S_i" public_interface="in" units="dimensionless"/>
-        <variable initial_value="2" name="k_cGMP" units="per_micromolar"/>
+        <variable name="T" units="kilopascals"/>
+        <variable initial_value="0.5623413" name="Ca50_0" units="micromolar"/>
+        <variable name="S_iCa50" public_interface="in" units="dimensionless"/>
+																		  
         <variable name="Ca50" units="micromolar"/>
-        <variable initial_value="2.5" name="h" units="dimensionless"/>
-        <variable initial_value="17" name="T_max" units="pascal"/>
+        <variable initial_value="3.4" name="h" units="dimensionless"/>
+        <variable initial_value="313" name="T_max" units="kilopascals"/>
         <variable name="Ca_i_SM" public_interface="in" units="micromolar"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
@@ -966,11 +969,11 @@
                     <apply>
                         <plus/>
                         <cn cellml:units="dimensionless">1</cn>
-                        <apply>
-                            <times/>
-                            <ci>k_cGMP</ci>
-                            <ci>S_i</ci>
-                        </apply>
+							   
+									
+										   
+                        <ci>S_iCa50</ci>
+								
                     </apply>
                 </apply>
             </apply>
@@ -4957,7 +4960,7 @@
     </connection>
     <connection>
         <map_components component_1="neural_input" component_2="active_tension"/>
-        <map_variables variable_1="S_iCa50" variable_2="S_i"/>
+        <map_variables variable_1="S_iCa50" variable_2="S_iCa50"/>
     </connection>
     <connection>
         <map_components component_1="SM_Membrane" component_2="active_tension"/>
