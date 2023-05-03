@@ -3354,7 +3354,7 @@
                 <ci>I_stim</ci>
                 <piecewise>
                     <piece>
-                        <cn cellml:units="dimensionless">80</cn>
+                        <cn cellml:units="current_units">0</cn>
                         <apply>
                             <and/>
                             <apply>
@@ -3370,11 +3370,12 @@
                         </apply>
                     </piece>
                     <otherwise>
-                        <cn cellml:units="dimensionless">0</cn>
+                        <cn cellml:units="current_units">0</cn>
                     </otherwise>
                 </piecewise>
             </apply>
         </math>
+        <!-- a value of -168 will induce a SW at 18.5 s-->
     </component>
     <component name="P_NSCC">
         <variable name="Ca_i" public_interface="in" units="micromolar"/>
@@ -4301,6 +4302,7 @@
                     <ci>I_KV</ci>
                     <ci>I_KERG</ci>
                     <ci>I_NSV</ci>
+                    <ci>I_stim</ci>
                 </apply>
             </apply>
             <apply>
