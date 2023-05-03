@@ -1,4 +1,4 @@
-<?xml version='1.0'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <model name="ICC_SMC_Neuro" xmlns="http://www.cellml.org/cellml/1.0#" xmlns:cellml="http://www.cellml.org/cellml/1.0#" xmlns:cmeta="http://www.cellml.org/metadata/1.0#">
     <units name="volume_units">
         <unit exponent="3" prefix="micro" units="meter"/>
@@ -135,7 +135,7 @@
     <component name="Time">
         <variable cmeta:id="time" name="time" private_interface="out" public_interface="out" units="time_units"/>
     </component>
-    <!--SMC components&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+    <!-- SMC components -->
     <component name="Environment">
         <variable initial_value="310" name="T" private_interface="out" units="Temperature_units"/>
         <variable initial_value="297" name="T_exp" private_interface="out" units="Temperature_units"/>
@@ -250,9 +250,9 @@
     <component name="SM_Membrane">
         <variable initial_value="77" name="Cm_SM" units="capacitance_units"/>
         <variable initial_value="3500" name="Vol_SM" private_interface="out" public_interface="out" units="volume_units"/>
-        <variable cmeta:id="Vm" initial_value="-69.75" name="Vm_SM" private_interface="out" public_interface="out" units="voltage_units"/>
+        <variable initial_value="-69.75" name="Vm_SM" private_interface="out" public_interface="out" units="voltage_units"/>
         <variable name="time" private_interface="out" public_interface="in" units="time_units"/>
-        <variable cmeta:id="Cai" initial_value="0.00008" name="Ca_i" private_interface="out" public_interface="out" units="millimolar"/>
+        <variable initial_value="0.00008" name="Ca_i" private_interface="out" public_interface="out" units="millimolar"/>
         <variable initial_value="10" name="Na_i" private_interface="out" public_interface="out" units="millimolar"/>
         <variable initial_value="164" name="K_i" private_interface="out" units="millimolar"/>
         <variable name="Ca_o" private_interface="out" public_interface="in" units="millimolar"/>
@@ -266,12 +266,12 @@
         <variable name="RToF" private_interface="out" public_interface="in" units="voltage_units"/>
         <variable name="FoRT" private_interface="out" public_interface="in" units="Inverse_Voltage_units"/>
         <variable name="F" private_interface="out" public_interface="in" units="F_units"/>
-        <variable cmeta:id="INa" name="I_Na_SM" private_interface="in" units="current_units"/>
-        <variable cmeta:id="ICaL" name="I_Ltype_SM" private_interface="in" units="current_units"/>
-        <variable cmeta:id="ILVA" name="I_LVA_SM" private_interface="in" units="current_units"/>
-        <variable cmeta:id="IKr" name="I_kr_SM" private_interface="in" units="current_units"/>
-        <variable cmeta:id="IKA" name="I_ka_SM" private_interface="in" units="current_units"/>
-        <variable cmeta:id="IBK" name="I_BK_SM" private_interface="in" units="current_units"/>
+        <variable name="I_Na_SM" private_interface="in" units="current_units"/>
+        <variable name="I_Ltype_SM" private_interface="in" units="current_units"/>
+        <variable name="I_LVA_SM" private_interface="in" units="current_units"/>
+        <variable name="I_kr_SM" private_interface="in" units="current_units"/>
+        <variable name="I_ka_SM" private_interface="in" units="current_units"/>
+        <variable name="I_BK_SM" private_interface="in" units="current_units"/>
         <variable name="S_iSK" private_interface="out" public_interface="in" units="dimensionless"/>
         <variable name="I_SK_SM" private_interface="in" units="current_units"/>
         <variable name="I_NSCC_SM" private_interface="in" units="current_units"/>
@@ -806,7 +806,7 @@
         </math>
     </component>
     <component name="I_LVA_SM">
-        <variable cmeta:id="I_LVA_SM_I_LVA_SM" name="I_LVA_SM" public_interface="out" units="current_units"/>
+        <variable name="I_LVA_SM" public_interface="out" units="current_units"/>
         <variable name="E_Ca" units="voltage_units"/>
         <variable initial_value="0.18" name="G_max_LVA" units="conductance_units"/>
         <variable name="Vm_SM" private_interface="out" public_interface="in" units="voltage_units"/>
@@ -899,7 +899,7 @@
         </math>
     </component>
     <component name="I_BK_SM">
-        <variable cmeta:id="I_BK_SM_I_BK_SM" name="I_BK_SM" public_interface="out" units="current_units"/>
+        <variable name="I_BK_SM" public_interface="out" units="current_units"/>
         <variable name="Ca_i" private_interface="out" public_interface="in" units="millimolar"/>
         <variable name="E_K" units="voltage_units"/>
         <variable initial_value="45.7" name="G_max_BK" units="conductance_units"/>
@@ -1493,7 +1493,7 @@
         </math>
     </component>
     <component name="I_kr_SM">
-        <variable cmeta:id="I_kr_SM_I_kr_SM" name="I_kr_SM" public_interface="out" units="current_units"/>
+        <variable name="I_kr_SM" public_interface="out" units="current_units"/>
         <variable name="E_K" units="voltage_units"/>
         <variable initial_value="35" name="G_max_kr_SM" units="conductance_units"/>
         <variable name="Vm_SM" private_interface="out" public_interface="in" units="voltage_units"/>
@@ -1690,7 +1690,7 @@
         </math>
     </component>
     <component name="I_Na_SM">
-        <variable cmeta:id="I_Na_SM_I_Na_SM" name="I_Na_SM" public_interface="out" units="current_units"/>
+        <variable name="I_Na_SM" public_interface="out" units="current_units"/>
         <variable name="E_Na" units="voltage_units"/>
         <variable initial_value="3" name="G_max_Na_SM" units="conductance_units"/>
         <variable name="Vm_SM" private_interface="out" public_interface="in" units="voltage_units"/>
@@ -1897,7 +1897,7 @@
         </math>
     </component>
     <component name="I_ka_SM">
-        <variable cmeta:id="I_ka_SM_I_ka_SM" name="I_ka_SM" public_interface="out" units="current_units"/>
+        <variable name="I_ka_SM" public_interface="out" units="current_units"/>
         <variable name="E_K" units="voltage_units"/>
         <variable initial_value="9" name="G_max_ka_SM" units="conductance_units"/>
         <variable name="Vm_SM" private_interface="out" public_interface="in" units="voltage_units"/>
@@ -2029,7 +2029,7 @@
         </math>
     </component>
     <component name="I_NSCC_SM">
-        <variable cmeta:id="I_NSCC_SM_I_NSCC_SM" name="I_NSCC_SM" public_interface="out" units="current_units"/>
+        <variable name="I_NSCC_SM" public_interface="out" units="current_units"/>
         <variable initial_value="-28" name="E_NSCC" units="voltage_units"/>
         <variable initial_value="50" name="G_max_NSCC_SM" units="conductance_units"/>
         <variable name="Vm_SM" private_interface="out" public_interface="in" units="voltage_units"/>
@@ -2104,7 +2104,7 @@
             </apply>
         </math>
     </component>
-    <!-- ICC components&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;- -->
+    <!-- ICC components -->
     <component name="Parameters">
         <variable initial_value="1e-09" name="p2m" public_interface="out" units="dimensionless"/>
         <variable initial_value="1e+15" name="umc2L" public_interface="out" units="dimensionless"/>
@@ -3804,7 +3804,7 @@
                 </apply>
             </apply>
         </math>
-        <!--+20{conductance_units}*inh_Ano1*0.1{dimensionless}*(Vm-E_Cl);-->
+																			
     </component>
     <component name="J_SERCA">
         <variable initial_value="0.1" name="Ke" units="micromolar"/>
@@ -4353,8 +4353,8 @@
             </apply>
         </math>
     </component>
-    <!-- MAPPING &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
- ICC-->
+    <!-- MAPPING -->
+    <!-- ICC -->
     <connection>
         <map_components component_1="Parameters" component_2="Nernst"/>
         <map_variables variable_1="z_ca" variable_2="z_ca"/>
@@ -4722,7 +4722,7 @@
         <map_components component_1="Time" component_2="ICC_Membrane"/>
         <map_variables variable_1="time" variable_2="time"/>
     </connection>
-    <!-- SMC mapping-->
+    <!-- SMC mapping -->
     <connection>
         <map_components component_1="m_Na_SM" component_2="I_Na_SM"/>
         <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
@@ -4963,7 +4963,7 @@
         <map_components component_1="SM_Membrane" component_2="active_tension"/>
         <map_variables variable_1="Ca_i" variable_2="Ca_i_SM"/>
     </connection>
-    <!-- GROUPING&#45;&#45;&#45;&#45;&#45;&#45;- -->
+    <!-- GROUPING -->
     <group>
         <relationship_ref relationship="encapsulation"/>
         <component_ref component="SM_Membrane">
