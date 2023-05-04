@@ -29,19 +29,25 @@ pos_x = x-min(x);
 
 % approximately mask out non-events period
 i = [];
-peak_search_duration = round(100/(t(2)-t(1))); % in num elements
-event_approx_duration = round(3000/(t(2)-t(1))); % in num elements
+peak_search_duration = 100; %round(100/(t(2)-t(1))); % in num elements
+event_approx_duration = 3000; %round(3000/(t(2)-t(1))); % in num elements
 
 cumulative_mask = zeros(size(x));
 for j = 1:length(i_diff)
     v = i_diff(j);
     mask = zeros(length(x), 1);
-    if v+event_approx_duration > length(x)
+    
+    tgt_t_ind = find_time(t, v, event_approx_duration);
+    
+    if isnan(tgt_t_ind)
         i(j) = NaN;
     else
-        mask(v:v+event_approx_duration) = 1;
+        mask(v:tgt_t_ind) = 1;
 		mask_peak = zeros(length(x), 1);
-		mask_peak(v:v+peak_search_duration) = 1;
+        
+        search_t_ind = find_time(t, v, peak_search_duration);
+        
+		mask_peak(v:search_t_ind) = 1;
         cumulative_mask = mask | cumulative_mask;
         [~, i(j)] = max(pos_x.*mask_peak);
     end
@@ -63,3 +69,13 @@ peak_p = mean(x(i))-min(x);
 plateau_p = mean(x(i_plateau))-min(x);
 
 end
+
+function tgt_ind = find_time(t, currInd, t_delta)
+tgt_time = t(currInd)+t_delta;
+if tgt_time > max(t)
+    tgt_ind = NaN;
+else
+    [~, tgt_ind] = min(abs(tgt_time-t));
+end
+end
+
