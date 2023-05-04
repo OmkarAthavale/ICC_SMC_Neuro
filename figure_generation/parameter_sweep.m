@@ -1,4 +1,4 @@
-%%% optimisation_results.m
+%%% parameter_sweep.m
 %%% Omkar N. Athavale, May 2023
 %%% Perform equally spaced parameter sweeps for one or two changing variables
 

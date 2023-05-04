@@ -3,8 +3,8 @@
 %%% Plot sweeps across k_xXXXX parameters from 0 - 1
 
 % --- INPUTS ---
-var_seq = 1:4; % variable index to sweep (max 2)
-n = 11; % number of points to sweep (all variables same)
+var_seq = 5; % variable index to sweep (max 2)
+n = 51; % number of points to sweep (all variables same)
 % --------------
 
 % parameter info
@@ -15,7 +15,6 @@ x_e = ones(1, 5);
 
 for k = 1:length(var_seq)
     sweep_var = var_seq(k); % select sweep variable
-
     
     weights = [3.149566984343386, 1.178185077905521, 5]; % these make no difference here, w_i=w_e=1
     effect_vals = zeros(n, 5);
@@ -97,7 +96,7 @@ axes(ax(2));
 xlim([min(d{i}.effect_vals(:, d{i}.sweep_var)), max(d{i}.effect_vals(:, d{i}.sweep_var))])
 ylim([-300 3])
 
-ylabel('Tension (mN)')
+ylabel('Tension (kPa)')
 
 [~, sorterInd] = sort(plateau_ends_number(:, 1));
 set(ax(2).YAxis, 'TickLabel',fliplr(d{i}.names(1:5)))
@@ -112,4 +111,4 @@ set(tmp.YAxis, 'TickLabel',sprintf('%+.0f%%\n', (round(plateau_ends(sorterInd, 2
 box off
 
 set(h, 'PaperPositionMode', 'auto')
-saveas(h, sprintf('../generated_fig/1D_multiSweeps_%s', datestr(datetime, 'yymmddHHMMSS')), 'svg')
+saveas(h, sprintf('../generated_fig/1D_multiSweeps_%d_%d_%s', freq_offset, tension_offset, datestr(datetime, 'yymmddHHMMSS')), 'svg')
