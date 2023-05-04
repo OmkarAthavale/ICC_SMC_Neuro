@@ -20,6 +20,7 @@ if nargin < 3
 else
     eps = 0.6;
     x = x(find(abs(t - t_range(1)) < eps):find(abs(t - t_range(2)) < eps));
+    t_adj = t(find(abs(t - t_range(1)) < eps):find(abs(t - t_range(2)) < eps));
 end
 
 % identify events onsets
@@ -37,7 +38,7 @@ for j = 1:length(i_diff)
     v = i_diff(j);
     mask = zeros(length(x), 1);
     
-    tgt_t_ind = find_time(t, v, event_approx_duration);
+    tgt_t_ind = find_time(t_adj, v, event_approx_duration);
     
     if isnan(tgt_t_ind)
         i(j) = NaN;
@@ -45,7 +46,7 @@ for j = 1:length(i_diff)
         mask(v:tgt_t_ind) = 1;
 		mask_peak = zeros(length(x), 1);
         
-        search_t_ind = find_time(t, v, peak_search_duration);
+        search_t_ind = find_time(t_adj, v, peak_search_duration);
         
 		mask_peak(v:search_t_ind) = 1;
         cumulative_mask = mask | cumulative_mask;
