@@ -22,12 +22,12 @@ fval = nan(size(x0, 1), 1);
 exitflag = nan(size(x0, 1), 1);
 output = cell(size(x0, 1), 1);
 
-parpool(48)% solve for each initial guess in parallel
-parfor i = 1:size(x0, 1)
+% parpool(48)% solve for each initial guess in parallel
+for i = 1:size(x0, 1)
     options = optimoptions(@fmincon);%('PlotFcns',@optimplotfval);
     disp(x0(i, :))
     % fixed values of k_iAno1, k_iNSCC, and p_iICC are in objFun_SMC
     [sol(i, :),fval(i),exitflag(i),output{i}] = fmincon(@objFun_SMC, x0(i, :), [], [], [], [], lb, ub, [], options);
 end
 
-save(sprintf('optim_SMC_%s', datestr(datetime, 'yymmddHHMMSS')));
+save(sprintf('../data/optim_SMC_%s', datestr(datetime, 'yymmddHHMMSS')));

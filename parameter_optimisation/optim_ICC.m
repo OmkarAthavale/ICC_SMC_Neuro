@@ -33,5 +33,5 @@ parfor i = 1:size(x0, 1)
     [sol(i, :),fval(i),exitflag(i),output{i}] = fmincon(@objFun_ICC,x0(i, :), A, b, [], [], lb, ub, [], options); 
 end
 
-save(sprintf('../saved_results/optim_ICC_%s', datestr(datetime, 'yymmddHHMMSS')));
+save(sprintf('../data/optim_ICC_%s', datestr(datetime, 'yymmddHHMMSS')));
 
