@@ -1,171 +1,75 @@
-names = {'Ano1', 'NSCC', 'Tension', 'SK', 'IP3'};
+%%% sweep_plots.m
+%%% Omkar N. Athavale, May 2023
+%%% Plot results from 1D or 2D parameter sweeps
+%%% Run the data load section first, then the seciton of the figure to plot
 
-%% three changing
-% [X, Y, Z] = meshgrid(linspace(0,1,30));
-% x_i = linspace(0, 1, 5)';
-% x_e = 0;
-% effect_vals = [reshape(X, [], 1), reshape(Y, [], 1), reshape(Z, [], 1)];
+%% Data load
+data_path = '../data/2DSweep_230429201029';
 
+load(data_path)
 
-%% two changing
-% N = 2;
-% n = N*N;
-% v1 = 1;
-% v2 = 2;
-% 
-% [X, Y] = meshgrid(linspace(0,1,N));
-% x_i = 1;
-% x_e = 0;
-% effect_vals = zeros(n, 5);
-% 
-% effect_vals(:, v1) = reshape(X, [], 1);
-% effect_vals(:, v2) = reshape(Y, [], 1);
-
-%% one changing
-n = 11;
-effect_var = 1;
-
-effect_vals = zeros(n, 5); % rows: Ano1, NSCC, Tension, SK, IP3
-effect_vals(:, effect_var) = linspace(0, 1, n);
-effect_vals = [0.627769856911043	0.776142555889738	0.979668821887735	0.228026943965982 1];
-
-weights = [3.149566984343386, 1.178185077905521, 5];
-effect_vals = ones(n, 5).*[0.325665483807710,0.774750185285083, 0.882382705973490,0.441452785127037, 0.92];
-
-% effect_vals(:, 1) = 0.8;
-x_i = linspace(0, 1, 11);%zeros(1, 11);
-x_e = linspace(0, 1, 11);%linspace(0, 1, 11);
-
-%% run sims
-f = zeros(n, 1);
-peak_p = zeros(n, 1);
-plateau_p = zeros(n, 1);
-
-for i = 1:n
-    [t, s, a] = ICC_SMC_GT_Neuro_V5_v1(effect_vals(i, :), weights, x_e(i), x_i(i));
-    T = a(:, 7);
-    Vm_ICC = s(:,3); 
-    Vm_SMC = s(:,1); 
-    [~, peak_p_ICC(i), plateau_p_ICC(i)] = calculate_frequency(t, Vm_ICC, [60000 180000]);
-    [f(i), peak_p(i), plateau_p(i)] = calculate_frequency(t, T, [60000 180000]);
-    %     [plateau_a, plateau_p] = calculate_plateau();
-    %     [peak_a, peak_p] = calculate_peak();
+if length(sweep_var) == 2
+    v1 = sweep_var(1);
+    v2 = sweep_var(2);
 end
 
-%% 1D over stim range
-% figure
-% % plot(x_i, f/max(f))
-% hold on
-% plot(x_i, peak_p)
-% plot(x_i, plateau_p)
-% 
-% legend({'peak p', 'plateau p'})
-%% Save 1D data
-% save(sprintf('1DSweep_%s_', datestr(datetime, 'yymmddHHMMSS'), names{effect_var}), 'effect_vals', 'f', 'peak_p', 'plateau_p', 'names', 'effect_var')
-%% Save 2D data
-% save(sprintf('2DSweep_%s', datestr(datetime, 'yymmddHHMMSS')), 'effect_vals', 'f', 'peak_p', 'plateau_p','peak_p_ICC', 'plateau_p_ICC', 'v1', 'v2', 'N')
-%% Save 3D data
-% save('3DSweep', 'effect_vals', 'f', 'peak_p', 'plateau_p')
-%% 3D scatter plot inhibitory scaling
-% figure;
-% scatter3(effect_vals(:, 1), effect_vals(:, 2), effect_vals(:, 3), 30, f, 'filled')
-% xlabel('ano1')
-% ylabel('nscc')
-% zlabel('tension')
-% title('Frequency (cpm)')
-% 
-% figure;
-% scatter3(effect_vals(:, 1), effect_vals(:, 2), effect_vals(:, 3), 30, peak_p, 'filled')
-% xlabel('ano1')
-% ylabel('nscc')
-% zlabel('tension')
-% title('Initial amplitude (mN)')
-% 
-% figure;
-% scatter3(effect_vals(:, 1), effect_vals(:, 2), effect_vals(:, 3), 30, plateau_p, 'filled')
-% xlabel('ano1')
-% ylabel('nscc')
-% zlabel('tension')
-% title('Plateau amplitude (mN)')
+%% 2D surface plot of VmICC and tension
+% Blue is peak, red is plateau
 
+figure;
+subplot(2,1,1) % Vm_ICC
+surf(reshape(effect_vals(:, v1), N, N), reshape(effect_vals(:, v2), N, N), reshape(peak_p_ICC, N, N), 'EdgeColor', 'b')
+hold on;
+surf(reshape(effect_vals(:, v1), N, N), reshape(effect_vals(:, v2), N, N), reshape(plateau_p_ICC, N, N), 'EdgeColor', 'r')
 
-%% Two var change plot
+zlim([0, 50])
+xlabel(sprintf('%s scaling constant', names{v1}));
+ylabel(sprintf('%s scaling constant', names{v2}));
+zlabel('Vm_ICC (mV)')
 
-% figure; 
-% subplot(2,1,1)
-% surf(reshape(effect_vals(:, v1), N, N), reshape(effect_vals(:, v2), N, N), reshape(peak_p_ICC, N, N), 'EdgeColor', 'b')
-% 
-% zlim([0, 15])
-% xlabel(sprintf('%s scaling constant', names{v1}));
-% ylabel(sprintf('%s scaling constant', names{v2}));
-% zlabel('Peak tension (mN)')
-% 
-% % subplot(2,1,2)
-% hold on;
-% surf(reshape(effect_vals(:, v1), N, N), reshape(effect_vals(:, v2), N, N), reshape(plateau_p_ICC, N, N), 'EdgeColor', 'r')
-% zlim([0, 15])
-% xlabel(sprintf('%s scaling constant', names{v1}));
-% ylabel(sprintf('%s scaling constant', names{v2}));
-% zlabel('Plateau tension (mN)')
+subplot(2,1,2) % Tension
+surf(reshape(effect_vals(:, v1), N, N), reshape(effect_vals(:, v2), N, N), reshape(peak_p, N, N), 'EdgeColor', 'b')
+hold on;
+surf(reshape(effect_vals(:, v1), N, N), reshape(effect_vals(:, v2), N, N), reshape(plateau_p, N, N), 'EdgeColor', 'r')
 
-%% contour tension 2D
-% figure; 
-% plateau_p_rescale = (plateau_p+66)/(plateau_p(1)+66);
-% contourf(reshape(effect_vals(:, v1), N, N), reshape(effect_vals(:, v2), N, N), reshape(plateau_p_rescale, N, N), [94.8185619463529;92.7261969788078;83.0232202801652;76.3685106316160]./100)
+zlim([0, 15])
+xlabel(sprintf('%s scaling constant', names{v1}));
+ylabel(sprintf('%s scaling constant', names{v2}));
+zlabel('Tension (kPa)')
 
-%% contour vm icc 2D
-% figure; 
-% plateau_p_ICC_rescale = (plateau_p_ICC)/(plateau_p_ICC(1));
-% contourf(reshape(effect_vals(:, v1), N, N), reshape(effect_vals(:, v2), N, N), reshape(plateau_p_ICC_rescale, N, N), [1;0.885236705411731;0.835212426850925;0.797609950489086;0.769498776686641])
-% xlim([0 1])
-% ylim([0 1])
-% 
-% xlabel('kAno1')
-% ylabel('kNSCC')
-% colormap(bone)
-% caxis([0 1]);
-% c = colorbar('Ticks',flipud([1;0.885236705411731;0.835212426850925;0.797609950489086;0.769498776686641]), 'TickLabels', fliplr({'100%',  '89%', '84%', '80%', '77%'}));
-% c.Label.String = 'Percentage of no stimulation V_{ICC} amplitude';
-% 
-% hold on;
-% plot([zeros(1, 36);sol(:, 1)'], [zeros(1, 36);sol(:, 2)'], 'r:')
-% scatter(sol(:, 1), sol(:, 2), 'r.')
-% 
-% line([0,0], [0, 253/180], 'Color', 'g', 'LineWidth', 2);
-% line([0,1.265], [0, 0], 'Color', 'g', 'LineWidth', 2);
-% line([0,1.265], [253/180, 0], 'Color', 'g', 'LineWidth', 2);
-% line([0,1.265], [253/180, 0], 'Color', 'g', 'LineWidth', 2);
-%% Still 2D
-% figure; 
-% m1 = reshape(effect_vals(:, v1), N, N);
-% m2 = reshape(effect_vals(:, v2), N, N);
-% d = reshape(plateau_p, N, N);
-% 
-% subplot(2,1,1)
-% plot(m1(1, :), d(1, :))
-% hold on
-% plot(m1(9, :), d(9, :))
-% plot(m1(17, :), d(17, :))
-% plot(m1(end, :), d(end, :))
-% 
-% subplot(2,1,2)
-% plot(m2(:, 1), d(:, 1))
-% hold on
-% plot(m2(:, 9), d(:, 9))
-% plot(m2(:, 17), d(:, 17))
-% plot(m2(:, end), d(:, end))
-% 
-% zlim([0, 15])
-% xlabel(sprintf('%s scaling constant', names{v1}));
-% ylabel(sprintf('%s scaling constant', names{v2}));
-% zlabel('Peak tension (mN)')
-% 
-% subplot(2,1,2)
-% surf(reshape(effect_vals(:, v1), N, N), reshape(effect_vals(:, v2), N, N), reshape(plateau_p, N, N))
-% zlim([0, 15])
-% xlabel(sprintf('%s scaling constant', names{v1}));
-% ylabel(sprintf('%s scaling constant', names{v2}));
-% zlabel('Plateau tension (mN)')
+%% Isolines for experimental values of percentage change in Vm_ICC amplitude
+% additionally plot the Step 1 parameter optimisation solutions for Ano1
+% and NSCC
+
+optim_data = '../data/optim_ICC_sdkfgbcskdjv'; % '' if none
+isoline = [1;0.885236705411731;0.835212426850925;0.797609950489086;0.769498776686641]; % for [0, 2.5, 5, 7.5, 10] Hz interpolated from Kim 2003, see objFun_ICC.m
+
+figure;
+plateau_p_ICC_rescale = (plateau_p_ICC)/(plateau_p_ICC(1));
+contourf(reshape(effect_vals(:, v1), N, N), reshape(effect_vals(:, v2), N, N), reshape(plateau_p_ICC_rescale, N, N), isoline)
+xlim([0 1])
+ylim([0 1])
+
+xlabel('kAno1')
+ylabel('kNSCC')
+colormap(bone)
+caxis([0 1]);
+c = colorbar('Ticks',flipud(), 'TickLabels', fliplr({'100%',  '89%', '84%', '80%', '77%'}));
+c.Label.String = 'Percentage of no stimulation V_{ICC} amplitude';
+
+if ~strcmp(optim_data, '')
+    hold on;
+    load(optim_data);
+    
+    plot([zeros(1, 36);sol(:, 1)'], [zeros(1, 36);sol(:, 2)'], 'r:')
+    scatter(sol(:, 1), sol(:, 2), 'r.')
+    
+    % plot contraints for Ano1, NSCC optim
+    line([0,0], [0, 253/180], 'Color', 'g', 'LineWidth', 2);
+    line([0,1.265], [0, 0], 'Color', 'g', 'LineWidth', 2);
+    line([0,1.265], [253/180, 0], 'Color', 'g', 'LineWidth', 2);
+    line([0,1.265], [253/180, 0], 'Color', 'g', 'LineWidth', 2);
+end
 
 %% Single var change plots
 % h = figure('Units', 'centimeters');
