@@ -1,5 +1,5 @@
 function [f, peak_p, plateau_p] = calculate_metrics(t, x, t_range)
-%%% optim_SMC.m
+%%% calculate_metrics.m
 %%% Omkar N. Athavale, May 2023
 %%% Calculate the peak, plateau, and frequency metrics for a given signal
 %%% Can be tension, Vm_ICC, or Vm_SMC
@@ -69,14 +69,5 @@ f = 60*1000/mean(diff(t(i))); % in cpm
 peak_p = mean(x(i))-min(x);
 plateau_p = mean(x(i_plateau))-min(x);
 
-end
-
-function tgt_ind = find_time(t, currInd, t_delta)
-tgt_time = t(currInd)+t_delta;
-if tgt_time > max(t)
-    tgt_ind = NaN;
-else
-    [~, tgt_ind] = min(abs(tgt_time-t));
-end
 end
 
