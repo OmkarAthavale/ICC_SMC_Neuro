@@ -21,8 +21,8 @@ f = zeros(4, 1);
 peak_p = zeros(4, 1);
 plateau_p = zeros(4, 1);
 
-weighting = [3.14837166407295, effect_vals(end), 1];  % fixed parameters
-effect_vals = [0.342283772749732,0.768840891004290, effect_vals(1:end-1), 0]; % fixed parameters
+weighting = [3.149932963402147, effect_vals(end), 1];  % fixed parameters
+effect_vals = [0.320920220620083,0.776439073613402, effect_vals(1:end-1), 0]; % fixed parameters
 
 for i = 1:length(x_i)
     [t, s, a] = ICC_SMC_Neuro(effect_vals, weighting, x_e, x_i(i));
@@ -37,6 +37,6 @@ peak_p_rescale = peak_p/peak_p(1);
 % data extracted from Kim et al. 2003 Fig 1B
 exp_peak = [1.0	0.8646840148698886	0.48698884758364325	0.2654275092936803]';%	0.15836431226765812]';
 
-o = sum(sqrt((exp_peak-peak_p_rescale).^2)); % sum of absolute deviation objective function
+o = sum(abs(exp_peak-peak_p_rescale)); % sum of absolute deviation objective function
 
 end

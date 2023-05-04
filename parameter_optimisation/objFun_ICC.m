@@ -41,5 +41,5 @@ Kim_fig2E = [0, 100;0.000946090000000000,98.3939137800000;0.00120648700000000,98
 fitKim2E = griddedInterpolant(Kim_fig2E(:, 1), Kim_fig2E(:, 2), 'spline');
 exp_plateau = fitKim2E(x_i*0.094)'./100; % express as percentage change from 0 stimulation
 
-o = sum(sqrt((exp_plateau-plateau_p_rescale).^2)); % sum of absolute deviation objective function
+o = sum(abs(exp_plateau-plateau_p_rescale)); % sum of absolute deviation objective function
 end
