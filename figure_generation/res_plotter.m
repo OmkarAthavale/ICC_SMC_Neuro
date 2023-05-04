@@ -1,18 +1,25 @@
+%%% aligned_event_plot.m
+%%% Omkar N. Athavale, May 2023
+%%% Plots a single event with aligned start times but peak rising derivative 
+%%% across a configurable sweep of parameter values. Default config is for panels of manuscript
+%%% Figure 2B.
 
+names = {'k_{iAno1}', 'k_{iNSCC}', 'k_{iCa50}', 'k_{iSK}', 'k_{eIP3}', 'p_{iICC}', 'p_{iSMC}', 'p_{e}',};
 
-names = {'Ano1', 'NSCC', 'Tension', 'SK', 'IP3', 'Inhibitory dosage', 'Excitatory dosage'};
-
-n = 5;
-effect_var = 6;
+n = 5; % number of equally spaced values in the sweep
+effect_var = [1, 2]; % which k parameter(s) to sweep
 duration = [0 120000];
-weights = [3.149566984343386, 1.178185077905521, 1];
-effect_vals = ones(n, 5).*[0.325665483807710,0.774750185285083, 0.882382705973490,0.441452785127037, 0]; % rows: Ano1, NSCC, Tension, SK, IP3
-% effect_vals = ones(n, 5).*[0.470752280897857,0.722024398246064, 0,0, 0]; % rows: Ano1, NSCC, Tension, SK, IP3
-% effect_vals(:, effect_var) = linspace(0, 1, n);
-% effect_vals(:, 1) = effect_vals(:, 2);%linspace(0, 1, n);
-% effect_vals(:, 1) = 0.8;
+weights = [3.149566984343386, 1.178185077905521, 1]; % these only matter if x_i or x_e are not 1 or 0.
+effect_vals = zeros(n, 5);
+effect_vals(:, effect_var(1)) = linspace(0, 1, n);
+
+if length(effect_var) > 1
+    effect_vals(:, effect_var(2)) = effect_vals(:, effect_var(1));
+end
+
 x_e = 0;
-x_i = linspace(0, 1, n);
+x_i = 1;
+
 h = figure('Units', 'centimeters');
 set(h, 'position', [18,18,7,11] );
 
@@ -23,7 +30,7 @@ ax(2) = subplot(2,1,2);
 colororder([1 1 1] .* linspace(0, 0.75, n)')
 
 for i = 1:n
-    [t0, s, a] = ICC_SMC_GT_Neuro_V5_v1(effect_vals(i, :), weights, x_e, x_i(i), duration);
+    [t0, s, a] = ICC_SMC_Neuro(effect_vals(i, :), weights, x_e, x_i, duration);
     [tT, T] = start_alignment(t0, a(:, 7), [84000, 120000]);
     [tICC, Vm_ICC] = start_alignment(t0, s(:,3), [84000, 120000]) ;
     [tSMC, Vm_SMC] = start_alignment(t0, s(:,1), [84000, 120000]) ;
@@ -41,11 +48,16 @@ end
 
 set(ax(1), 'XLim', [0 6], 'YLim', [-70 -20], 'XTickLabels', {});
 ax(1).YLabel.String = 'Potential (mV)';
-set(ax(2), 'XLim', [0 6], 'YLim', [0 16]);
+set(ax(2), 'XLim', [0 6], 'YLim', [0 50]);
 ax(2).XLabel.String = 'Time (s)';
 ax(2).YLabel.String = 'Tension (mN)';
 linkaxes(ax, 'x')
 
-% set(h, 'PaperPositionMode', 'auto')
-% saveas(h, 'Ano1_NSCC', 'svg')
-% ax(1).Title.String = sprintf('%s in range %d to %d', names{effect_var}, min(effect_vals(:, effect_var)), max(effect_vals(:, effect_var)));
+if length(effect_var) > 1
+    saveFile = sprintf('../generated_fig/event_sweep_%s_%s_%s', names{effect_var(1)}, names{effect_var(2)}, datestr(datetime, 'yymmddHHMMSS'));
+else
+    saveFile = sprintf('../generated_fig/event_sweep_%s_%s', names{effect_var(1)}, datestr(datetime, 'yymmddHHMMSS'));
+end
+
+set(h, 'PaperPositionMode', 'auto')
+saveas(h, saveFile, 'svg')
