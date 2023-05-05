@@ -26,23 +26,23 @@ Si_amp = sobol.analyze(problemDef, Y_amp)
 fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(4.48,4), tight_layout=True)
 
 axes[0, 0].bar(np.array(np.linspace(0, 3, 4)), Si_amp['S1'], tick_label=problemDef['names'], yerr=Si_amp['S1_conf'], fill=False)
-axes[0, 0].set_ylim(0, 1.5)
+axes[0, 0].set_ylim(0, 1.2)
 axes[0, 0].set_xticklabels([])
 axes[0, 0].set_ylabel('$\mathregular{S_1}$')
 axes[0, 0].set_title('Amplitude Metric')
 
 axes[0, 1].bar(np.array(np.linspace(0, 3, 4)), Si_freq['S1'], tick_label=problemDef['names'], yerr=Si_freq['S1_conf'], fill=False)
-axes[0, 1].set_ylim(0, 1.5)
+axes[0, 1].set_ylim(0, 1.2)
 axes[0, 1].set_xticklabels([])
 axes[0, 1].set_yticklabels([])
 axes[0, 1].set_title('Frequency Metric')
 
 axes[1, 0].bar(np.array(np.linspace(0, 3, 4)), Si_amp['ST'], tick_label=problemDef['names'], yerr=Si_amp['ST_conf'], fill=False)
-axes[1, 0].set_ylim(0, 1.5)
+axes[1, 0].set_ylim(0, 1.2)
 axes[1, 0].set_ylabel('$\mathregular{S_T}$')
 
 axes[1, 1].bar(np.array(np.linspace(0, 3, 4)), Si_freq['ST'], tick_label=problemDef['names'], yerr=Si_freq['ST_conf'], fill=False)
-axes[1, 1].set_ylim(0, 1.5)
+axes[1, 1].set_ylim(0, 1.2)
 axes[1, 1].set_yticklabels([])
 
 fig.savefig('SA_bar_charts.svg')
