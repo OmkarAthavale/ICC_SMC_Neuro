@@ -3,6 +3,7 @@
 %%% Plots a single event with aligned start times but peak rising derivative 
 %%% across a configurable sweep of parameter values. Default config is for panels of manuscript
 %%% Figure 2B.
+addpath('../matlab_common/')
 
 names = {'k_{iAno1}', 'k_{iNSCC}', 'k_{iCa50}', 'k_{iSK}', 'k_{eIP3}', 'p_{iICC}', 'p_{iSMC}', 'p_{e}',};
 
@@ -47,7 +48,7 @@ for i = 1:n
 end
 
 set(ax(1), 'XLim', [0 6], 'YLim', [-70 -20], 'XTickLabels', {});
-ax(1).YLabel.String = 'Potential (mV)';
+ax(1).YLabel.String = 'V_{ICC} (mV)';
 set(ax(2), 'XLim', [0 6], 'YLim', [0 50]);
 ax(2).XLabel.String = 'Time (s)';
 ax(2).YLabel.String = 'Tension (mN)';
