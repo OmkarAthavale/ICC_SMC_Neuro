@@ -9,7 +9,7 @@ smc_data_path = '../data/optim_SMC_230504200253';
 icc_data_path = '../data/optim_ICC_230502001619';
 
 % plot options
-histogram_edges = 0:0.05:1;
+histogram_edges = 0:0.02:1;
 y_limits = [0 1];
 save_plot = true;
 
@@ -64,6 +64,11 @@ for var = 1:n_var
     end
     vert(:, 1) = vert(:, 1) + 0.25;
     patch('Faces', faces, 'Vertices', vert, 'FaceColor', [0.7 0.7 0.7], 'EdgeColor', [0.4 0.4 0.4])
+end
+
+for i = 1:4
+    hold on;
+%     scatter(i+0.05+(rand(1, size(sol_plot, 1))*0.25), sol_plot(:, i), '.')
 end
 
 set(gca, 'XTick', 0.1+(1:n_var), 'XTickLabel', names(1:n_var), 'TickLabelInterpreter', 'tex')
