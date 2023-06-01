@@ -12,5 +12,5 @@ problemDef = {
               ]
 }
 
-param_values = saltelli.sample(problemDef, 2)
+param_values = saltelli.sample(problemDef, 1024)
 np.savetxt("param_values.txt", param_values)
