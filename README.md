@@ -21,4 +21,4 @@ Run scripts in the sequence shown below to reproduce figures - figures are saved
 
 Note that Figure 1 is a model illustration, not a simulation result. 
 
-[1] Athavale, O. N., Avci, R., Clark, A. R., Di Natale, M. R., Wang, X., Furness, J. B., Liu, Z., Cheng, L. K., & Du, P. (2023). A mathematical model of the neural regulation of slow waves and phasic contractions in the distal stomach. Unpublished.
+[1] Athavale, O. N., Avci, R., Clark, A. R., Di Natale, M. R., Wang, X., Furness, J. B., Liu, Z., Cheng, L. K., & Du, P. A mathematical model of the neural regulation of slow waves and phasic contractions in the distal stomach. Unpublished.
