@@ -3,7 +3,7 @@
 %%% Plot sweeps across k_xXXXX parameters from 0 - 1
 
 % --- INPUTS ---
-var_seq = 5; % variable index to sweep (max 2)
+var_seq = 1:5; % variable index to sweep (max 2)
 n = 51; % number of points to sweep (all variables same)
 % --------------
 
@@ -26,7 +26,7 @@ for k = 1:length(var_seq)
     plateau_p = zeros(n, 1);
     
     % run simulations
-    for i = 1:n
+    parfor i = 1:n
         [t, s, a] = ICC_SMC_Neuro(effect_vals(i, :), weights, x_e(sweep_var), x_i(sweep_var));
         T = a(:, 7);
         Vm_ICC = s(:,3);
@@ -47,12 +47,12 @@ for i = 1:nF
 end
 
 % offsets set to space out traces, about 1.5x initial value
-freq_offset = 4;        %cpm
-tension_offset = 65;    %kPa
+freq_offset = 0;        %cpm
+tension_offset = 0;    %kPa
 
 % figure generation
 h = figure('Units', 'centimeters');
-set(h, 'position', [18,18,9,11] );
+set(h, 'position', [10,10,9,11] );
 
 % plot frequency
 ax(1) = subplot(2,1,2);
@@ -77,38 +77,31 @@ end
 % Axis 1 (frequency, bottom axis)
 axes(ax(1));
 xlim([min(d{i}.effect_vals(:, d{i}.sweep_var)), max(d{i}.effect_vals(:, d{i}.sweep_var))])
-ylim([-20, 3])
+ylim([0 6])
 ylabel('Frequency (cpm)')
 xlabel(sprintf('Scaling constants'));
-[~, sorterInd] = sort(f_ends_number(:, 1));
-set(ax(1).YAxis, 'TickLabel',fliplr(d{i}.names(1:5)))
-set(ax(1), 'XTick', [0 0.5 1], 'YTick',sort(f_ends_number(:, 1)),'YTickLabelMode', 'manual')
 
+set(ax(1), 'XTick', [0 0.5 1]);
 box off
 % add end labels
-[~, sorterInd] = sort(f_ends_number(:, 2));
-tmp = axes('Position', ax(1).Position, 'xlim', ax(1).XLim, 'XTick', [], 'ylim', ax(1).YLim, 'color', 'none','YTickLabelMode', 'manual', 'YTick',sort(f_ends_number(:, 1)), 'YAxisLocation', 'right');
-set(tmp.YAxis, 'TickLabel',sprintf('%+.0f%%\n', (round(f_ends(sorterInd, 2)./f_ends(sorterInd, 1), 2)-1).*100))
-box off
+for i = 1:nF
+    text(1.01, f_ends_number(i, 2), d{i}.names(i))
+end
 
 % Axis 2 (tension, top axis)
 axes(ax(2));
 xlim([min(d{i}.effect_vals(:, d{i}.sweep_var)), max(d{i}.effect_vals(:, d{i}.sweep_var))])
-ylim([-300 3])
+ylim([0 50])
 
 ylabel('Tension (kPa)')
 
-[~, sorterInd] = sort(plateau_ends_number(:, 1));
-set(ax(2).YAxis, 'TickLabel',fliplr(d{i}.names(1:5)))
-set(ax(2), 'XTickLabels', {}, 'YTick',sort(plateau_ends_number(:, 1)),'YTickLabelMode', 'manual')
+set(ax(2), 'XTickLabels', {});
 
 box off
 % add end labels
-[~, sorterInd] = sort(plateau_ends_number(:, 2));
-tmp = axes('Position', ax(2).Position, 'XTick', [], 'xlim', ax(2).XLim, 'ylim', ax(2).YLim, 'color', 'none','YTickLabelMode', 'manual', 'YTick',sort(plateau_ends_number(:, 1)), 'YAxisLocation', 'right');
-set(tmp.YAxis, 'TickLabel',sprintf('%+.0f%%\n', (round(plateau_ends(sorterInd, 2)./plateau_ends(sorterInd, 1), 2)-1).*100))
-
-box off
+for i = 1:nF
+    text(1.01, plateau_ends_number(i, 2), d{i}.names(i))
+end
 
 set(h, 'PaperPositionMode', 'auto')
 saveas(h, sprintf('../generated_fig/1D_multiSweeps_%d_%d_%s', freq_offset, tension_offset, datestr(datetime, 'yymmddHHMMSS')), 'svg')
