@@ -36,7 +36,7 @@ end
 % There are a total of 160 entries in the constant variable array.
 %
 
-function [VOI, STATES, ALGEBRAIC, CONSTANTS] = solveModel(e, w, f_e, f_i);
+function [VOI, STATES, ALGEBRAIC, CONSTANTS] = solveModel(e, w, f_e, f_i, duration);
     % Create ALGEBRAIC of correct size
     global algebraicVariableCount;  algebraicVariableCount = getAlgebraicVariableCount();
     % Initialise constants and state variables
