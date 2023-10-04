@@ -45,4 +45,4 @@ axes[1, 1].bar(np.array(np.linspace(0, 3, 4)), Si_freq['ST'], tick_label=problem
 axes[1, 1].set_ylim(0, 1.2)
 axes[1, 1].set_yticklabels([])
 
-fig.savefig('SA_bar_charts.svg')
+fig.savefig('../generated_figures/SA_bar_charts.svg')
