@@ -17,8 +17,8 @@ Note that Figure 1 is a model illustration, not a simulation result.
 6. Figure 2B: aligned_event_plot.m
 7. Figure 3: parameter_sweep_1D_combinedPlot.m
 8. Figure 4: optimisation_results.m
-9. Figure 5A: dosage_sweep_plot.m
-10. Figure 5B: stimulation_plotter.m
+9. Figure 5A-B: dosage_sweep_plot.m
+10. Figure 5C: stimulation_plotter.m
 11. Figure 6: SA2_analysis_plot.py
 
 ### Dependencies
