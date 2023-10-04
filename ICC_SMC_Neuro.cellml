@@ -116,6 +116,9 @@
     <units name="kilopascals">
         <unit prefix="kilo" units="pascal"/>
     </units>
+    <units name="Hertz">
+        <unit exponent="-1" units="time_units_ICC"/>
+    </units>
     <component name="Time">
         <variable name="time" private_interface="out" public_interface="out" units="time_units"/>
     </component>
@@ -986,11 +989,12 @@
         </math>
     </component>
     <component name="neural_input">
-        <variable cmeta:id="excitatory_neural" initial_value="0" name="x_e" units="dimensionless"/>
-        <variable cmeta:id="inhibitory_neural" initial_value="0" name="x_i" units="dimensionless"/>
+        <variable cmeta:id="excitatory_neural" initial_value="0" name="f_e" units="dimensionless"/>
+        <variable cmeta:id="inhibitory_neural" initial_value="0" name="f_i" units="dimensionless"/>
         <variable name="w_iICC" units="dimensionless"/>
         <variable name="w_iSMC" units="dimensionless"/>
         <variable name="w_e" units="dimensionless"/>
+        <variable initial_value="10" name="f_max" units="Hertz"/>
         <variable initial_value="0.326" name="k_iAno1" units="dimensionless"/>
         <variable initial_value="0.775" name="k_iNSCC" units="dimensionless"/>
         <variable initial_value="0.882" name="k_iCa50" units="dimensionless"/>
@@ -1016,12 +1020,16 @@
                         <apply>
                             <exp/>
                             <apply>
-                                <times/>
+                                <divide/>
                                 <apply>
-                                    <minus/>
-                                    <ci>p_iICC</ci>
+                                    <times/>
+                                    <apply>
+                                        <minus/>
+                                        <ci>p_iICC</ci>
+                                    </apply>
+                                    <ci>f_i</ci>
                                 </apply>
-                                <ci>x_i</ci>
+                                <ci>f_max</ci>
                             </apply>
                         </apply>
                     </apply>
@@ -1049,12 +1057,16 @@
                         <apply>
                             <exp/>
                             <apply>
-                                <times/>
+                                <divide/>
                                 <apply>
-                                    <minus/>
-                                    <ci>p_iSMC</ci>
+                                    <times/>
+                                    <apply>
+                                        <minus/>
+                                        <ci>p_iSMC</ci>
+                                    </apply>
+                                    <ci>f_i</ci>
                                 </apply>
-                                <ci>x_i</ci>
+                                <ci>f_max</ci>
                             </apply>
                         </apply>
                     </apply>
@@ -1087,7 +1099,7 @@
                                     <minus/>
                                     <ci>p_e</ci>
                                 </apply>
-                                <ci>x_e</ci>
+                                <ci>f_e</ci>
                             </apply>
                         </apply>
                     </apply>
