@@ -1094,12 +1094,16 @@
                         <apply>
                             <exp/>
                             <apply>
-                                <times/>
+                                <divide/>
                                 <apply>
-                                    <minus/>
-                                    <ci>p_e</ci>
+                                    <times/>
+                                    <apply>
+                                        <minus/>
+                                        <ci>p_e</ci>
+                                    </apply>
+                                    <ci>f_e</ci>
                                 </apply>
-                                <ci>f_e</ci>
+                                <ci>f_max</ci>
                             </apply>
                         </apply>
                     </apply>
