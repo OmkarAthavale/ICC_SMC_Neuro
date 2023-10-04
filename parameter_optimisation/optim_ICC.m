@@ -4,6 +4,7 @@
 %%% parameters for k_iAno1, k_iNSCC, and p_iICC. 
 
 addpath(genpath('../'));
+rng(106676, 'twister')
 
 % constraint definition, see "help fmincon"
 lb = [0; 0; -5];
@@ -32,23 +33,6 @@ parfor i = 1:size(x0, 1)
     disp(x0(i, :))
     [sol(i, :),fval(i),exitflag(i),output{i}] = fmincon(@objFun_ICC,x0(i, :), A, b, [], [], lb, ub, [], options); 
 end
-
-% display the percentage change in solution values per intialisation 
-% (note randomisation)
-for randomSeed = 1:100
-for i = 1:48
-    cumulativeMed(i, :, randomSeed) = median(sol(randperm(48, i), :), 1);
-end
-end
-cumulativeMed = sum(cumulativeMed, 3);
-figure; 
-plot((diff(cumulativeMed)./cumulativeMed(1:end-1, :)).*100)
-yline(1)
-yline(-1)
-xlabel('Number of initialisations')
-ylabel({'Marginal change in solution value' , 'per additional intitialisation (%)'})
-ylim([-50, 50])
-legend({'k_iAno1', 'k_iNSCC', 'p_iICC'})
 
 save(sprintf('../data/optim_ICC_%s', datestr(datetime, 'yymmddHHMMSS')));
 

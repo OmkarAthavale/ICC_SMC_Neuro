@@ -4,6 +4,7 @@
 %%% parameters for k_iCa50, k_iNSCC, and p_iSMC. 
 
 addpath(genpath('../'));
+rng(106676, 'twister')
 
 % constraint definition, see "help fmincon"
 lb = [0; 0; -5];
