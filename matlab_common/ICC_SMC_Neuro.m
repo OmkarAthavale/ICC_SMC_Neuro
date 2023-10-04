@@ -1,5 +1,5 @@
 
-function [VOI, STATES, ALGEBRAIC, CONSTANTS] = ICC_SMC_Neuro(e, w, x_e, f_i, duration)
+function [VOI, STATES, ALGEBRAIC, CONSTANTS] = ICC_SMC_Neuro(e, w, f_e, f_i, duration)
    % Solves the combined ICC and SMC model with neurotransmission
    % INPUTS
    % e: 1 x 5 array of effector component weighting values in sequence

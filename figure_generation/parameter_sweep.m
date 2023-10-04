@@ -6,8 +6,8 @@
 sweep_var = [1]; % variable index to sweep (max 2)
 sweep_domain = [0 1]; % range to sweep (all variables same)
 n = 2; % number of points to sweep (all variables same)
-x_i = ones(1, n);
-x_e = zeros(1, n);
+f_i = 10.*ones(1, n);
+f_e = zeros(1, n);
 % --------------
 
 names = {'k_{iAno1}', 'k_{iNSCC}', 'k_{iCa50}', 'k_{iSK}', 'k_{eIP3}', 'p_{iICC}', 'p_{iSMC}', 'p_{e}',};
@@ -41,7 +41,7 @@ plateau_p = zeros(n, 1);
 
 % run simulations
 for i = 1:n
-    [t, s, a] = ICC_SMC_Neuro(effect_vals(i, :), weights, x_e(i), x_i(i));
+    [t, s, a] = ICC_SMC_Neuro(effect_vals(i, :), weights, f_e(i), f_i(i));
     T = a(:, 7);
     Vm_ICC = s(:,3);
     Vm_SMC = s(:,1);

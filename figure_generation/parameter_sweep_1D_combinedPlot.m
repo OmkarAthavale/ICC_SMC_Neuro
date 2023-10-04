@@ -10,8 +10,8 @@ n = 51; % number of points to sweep (all variables same)
 % parameter info
 names = {'k_{iAno1}', 'k_{iNSCC}', 'k_{iCa50}', 'k_{iSK}', 'k_{eIP3}', 'p_{iICC}', 'p_{iSMC}', 'p_{e}',};
 sweep_domain = repmat([0; 1], 1, 5); % range to sweep one column per variable
-x_i = ones(1, 5);
-x_e = ones(1, 5);
+f_i = 10.*ones(1, 5);
+f_e = 10.*ones(1, 5);
 
 for k = 1:length(var_seq)
     sweep_var = var_seq(k); % select sweep variable
@@ -27,7 +27,7 @@ for k = 1:length(var_seq)
     
     % run simulations
     parfor i = 1:n
-        [t, s, a] = ICC_SMC_Neuro(effect_vals(i, :), weights, x_e(sweep_var), x_i(sweep_var));
+        [t, s, a] = ICC_SMC_Neuro(effect_vals(i, :), weights, f_e(sweep_var), f_i(sweep_var));
         T = a(:, 7);
         Vm_ICC = s(:,3);
         Vm_SMC = s(:,1);
@@ -79,7 +79,7 @@ axes(ax(1));
 xlim([min(d{i}.effect_vals(:, d{i}.sweep_var)), max(d{i}.effect_vals(:, d{i}.sweep_var))])
 ylim([0 6])
 ylabel('Frequency (cpm)')
-xlabel(sprintf('Scaling constants'));
+xlabel(sprintf('Parameter value'));
 
 set(ax(1), 'XTick', [0 0.5 1]);
 box off

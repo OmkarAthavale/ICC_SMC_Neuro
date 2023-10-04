@@ -14,7 +14,7 @@ if effect_vals(end) == 0
 end
 
 % evaulation points
-x_i = [0.0	1.0	5.0	10.0]./10;
+x_i = [0.0	1.0	5.0	10.0];
 x_e = 0;
 
 f = zeros(4, 1);
