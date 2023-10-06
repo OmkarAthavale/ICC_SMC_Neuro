@@ -14,8 +14,8 @@ if effect_vals(end) == 0
 end
 
 % evaulation points
-x_i = [0.0	1.0	5.0	10.0];
-x_e = 0;
+f_i = [0.0	1.0	5.0	10.0];
+f_e = 0;
 
 f = zeros(4, 1);
 peak_p = zeros(4, 1);
@@ -24,8 +24,8 @@ plateau_p = zeros(4, 1);
 weighting = [3.149932963402147, effect_vals(end), 1];  % fixed parameters
 effect_vals = [0.320920220620083,0.776439073613402, effect_vals(1:end-1), 0]; % fixed parameters
 
-for i = 1:length(x_i)
-    [t, s, a] = ICC_SMC_Neuro(effect_vals, weighting, x_e, x_i(i));
+for i = 1:length(f_i)
+    [t, s, a] = ICC_SMC_Neuro(effect_vals, weighting, f_e, f_i(i));
     T = a(:, 7);
     Vm_ICC = s(:,3);
     Vm_SMC = s(:,1);
