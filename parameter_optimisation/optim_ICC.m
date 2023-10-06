@@ -4,7 +4,7 @@
 %%% parameters for k_iAno1, k_iNSCC, and p_iICC. 
 
 addpath(genpath('../'));
-rng(106676, 'twister')
+rng(0, 'twister')
 
 % constraint definition, see "help fmincon"
 lb = [0; 0; -5];
@@ -19,7 +19,7 @@ p = scramble(a,'MatousekAffineOwen');
 candidate = net(p,1000);
 candidate((candidate(:, 1)*10/9+candidate(:, 2)) > 253/180, :) = [];
 x0 = candidate(1:n, :); % sequence k_iAno1, kiNSCC, p_iICC
-x0(:, 3) = (x0(:, 3)-0.5)*10;
+x0(:, 3) = (x0(:, 3)-0.5)*10; % rescale p_iICC to be in [-5, 5]
 
 % initialise output matrices
 sol = nan(size(x0));

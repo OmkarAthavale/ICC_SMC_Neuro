@@ -4,7 +4,7 @@
 %%% parameters for k_iCa50, k_iNSCC, and p_iSMC. 
 
 addpath(genpath('../'));
-rng(106676, 'twister')
+rng(0, 'twister')
 
 % constraint definition, see "help fmincon"
 lb = [0; 0; -5];
@@ -15,7 +15,7 @@ n = 48; % number of inital guesses to sample
 a = sobolset(3);
 p = scramble(a,'MatousekAffineOwen');
 x0 = net(p,n); % sequence k_iCa50, kiSK, p_iSMC
-x0(:, 3) = (x0(:, 3)-0.5)*10;
+x0(:, 3) = (x0(:, 3)-0.5)*10; % rescale p_iSMC to be in [-5, 5]
 
 % initialise output matrices
 sol = nan(size(x0));
