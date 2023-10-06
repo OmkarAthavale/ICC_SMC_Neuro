@@ -21,8 +21,8 @@ f = zeros(4, 1);
 peak_p = zeros(4, 1);
 plateau_p = zeros(4, 1);
 
-weighting = [3.149932963402147, effect_vals(end), 1];  % fixed parameters
-effect_vals = [0.320920220620083,0.776439073613402, effect_vals(1:end-1), 0]; % fixed parameters
+weighting = [3.14933156638040, effect_vals(end), 1];  % fixed parameters
+effect_vals = [0.329454438664630,0.773384113014197, effect_vals(1:end-1), 0]; % fixed parameters
 
 for i = 1:length(f_i)
     [t, s, a] = ICC_SMC_Neuro(effect_vals, weighting, f_e, f_i(i));
