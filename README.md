@@ -13,10 +13,10 @@ Note that Figure 1 is a model illustration, not a simulation result.
 4. Sensitivity analysis parallel simulation: sensitivity_analysis/parallel_SA_simulate.m
 
 ### Plotting scripts
-5. Figure 2A: figure_generation/baseline_plotter.m 
+5. Figure 2A: figure_generation/baseline_plotter.m (this script also outputs quantified values to the MATLAB console)
 6. Figure 2B: figure_generation/aligned_event_plot.m
 7. Figure 3: figure_generation/parameter_sweep_1D_combinedPlot.m
-8. Figure 4: figure_generation/optimisation_results.m
+8. Figure 4: figure_generation/optimisation_results.m (this script also outputs exact fitted values to the MATLAB console)
 9. Figure 5A-B: figure_generation/dosage_sweep_plot.m
 10. Figure 5C: figure_generation/stimulation_plotter.m
 11. Figure 6: sensitivity_analysis/SA2_analysis_plot.py
