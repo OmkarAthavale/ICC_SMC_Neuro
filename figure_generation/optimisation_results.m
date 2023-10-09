@@ -5,13 +5,8 @@
 
 % ---INPUTS---
 % data inputs
-% smc_data_path = '../data/optim_SMC_230504200253';
-% icc_data_path = '../data/optim_ICC_230502001619';
-% icc_data_path = '../data/optim_ICC_231007013212.mat';
-% smc_data_path = '../data/optim_SMC_231007132235.mat';
-% smc_data_path = '../data/optim_SMC_231008055009'; % low kiano1 input
-icc_data_path = '../data/optim_ICC_231009140654.mat';
-smc_data_path = '../data/optim_ICC_231009140654.mat'; %96 initialisations
+smc_data_path = '../data/optim_SMC_data';
+icc_data_path = '../data/optim_ICC_data';
 
 % plot options
 histogram_edges = 0:0.02:1;
