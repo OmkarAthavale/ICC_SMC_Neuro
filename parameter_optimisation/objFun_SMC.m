@@ -21,8 +21,12 @@ f = zeros(4, 1);
 peak_p = zeros(4, 1);
 plateau_p = zeros(4, 1);
 
+% weighting = [3.34182038994190, effect_vals(end), 1];  % fixed parameters
+% effect_vals = [0.329454438664630,0.773384113014197, effect_vals(1:end-1), 0]; % fixed parameters
+
+% uncomment for low kiAno1 cluster
 weighting = [3.14933156638040, effect_vals(end), 1];  % fixed parameters
-effect_vals = [0.329454438664630,0.773384113014197, effect_vals(1:end-1), 0]; % fixed parameters
+effect_vals = [0.0914532418255071,0.844691701303740, effect_vals(1:end-1), 0]; % fixed parameters
 
 for i = 1:length(f_i)
     [t, s, a] = ICC_SMC_Neuro(effect_vals, weighting, f_e, f_i(i));
