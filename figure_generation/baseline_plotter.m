@@ -12,7 +12,29 @@ T = a(:, 7);
 Vm_ICC = s(:,3); 
 Vm_SMC = s(:,1); 
 
-% plot VmICC, VmSMC and tension on three subplots
+%% quantify variation over time
+dat = {'Vm_ICC', 'Vm_SMC', 'T'};
+
+fprintf('%10s: %10s (%10s %10s) | %10s (%10s %10s) | %10s (%10s %10s) |\n', 'VarName', 'Mean peak', 'Min peak', 'Max peak',  'Mean inter', 'Min inter', 'Max inter',  'Mean RMP', 'Min RMP', 'Max RMP');
+
+for i = 1:length(dat)
+    currDat = eval(dat{i});
+    [pk,loc] = findpeaks(currDat, 'MinPeakProminence', 10);
+    pk = pk(2:end);
+    loc = loc(2:end);
+    
+    mean_peak = mean(pk);
+    mean_interval = mean(diff(t(loc)));
+    mean_RMP = mean(currDat(loc(1:end-1)+round(diff(loc)./2)));
+    
+    range_peak = [min(pk), max(pk)];
+    range_interval = [min(diff(t(loc))), max(diff(t(loc)))];
+    range_RMP = [min(currDat(loc(1:end-1)+round(diff(loc)./2))), max(currDat(loc(1:end-1)+round(diff(loc)./2)))];
+    fprintf('%10s: %10.4f (%10.4f %10.4f) | %10.4f (%10.4f %10.4f) | %10.4f (%10.4f %10.4f) |\n', dat{i}, mean_peak, range_peak, mean_interval, range_interval, mean_RMP, range_RMP);
+    
+end
+
+%% plot VmICC, VmSMC and tension on three subplots
 h = figure('Units', 'centimeters');
 set(h, 'position', [18,18,18,10] );
 
