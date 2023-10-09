@@ -50,14 +50,6 @@ function [VOI, STATES, ALGEBRAIC, CONSTANTS] = solveModel(f_e, f_i, duration)
     % Compute algebraic variables
     [RATES, ALGEBRAIC] = computeRates(VOI, STATES, CONSTANTS);
     ALGEBRAIC = computeAlgebraic(ALGEBRAIC, CONSTANTS, STATES, VOI);
-
-    % Plot state variables against variable of integration
-%     [LEGEND_STATES, LEGEND_ALGEBRAIC, LEGEND_VOI, LEGEND_CONSTANTS] = createLegends();
-%     figure();
-%     plot(VOI, STATES);
-%     xlabel(LEGEND_VOI);
-%     l = legend(LEGEND_STATES);
-%     set(l,'Interpreter','none');
 end
 
 function [LEGEND_STATES, LEGEND_ALGEBRAIC, LEGEND_VOI, LEGEND_CONSTANTS] = createLegends()

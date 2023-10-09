@@ -1,0 +1,1545 @@
+def model{ICC_SMC_Neuro} ICC_SMC_Neuro as
+    def unit volume_units as
+        unit meter {pref: micro, expo: 3};
+    enddef;
+
+    def unit Inverse_Voltage_units as
+        unit voltage_units {expo: -1};
+    enddef;
+
+    def unit time_units as
+        unit second {pref: milli};
+    enddef;
+
+    def unit rate_constants_units as
+        unit time_units {expo: -1};
+    enddef;
+
+    def unit capacitance_units as
+        unit farad {pref: pico};
+    enddef;
+
+    def unit F_units as
+        unit mole {expo: -1};
+        unit coulomb;
+    enddef;
+
+    def unit R_units as
+        unit joule {pref: milli};
+        unit mole {expo: -1};
+        unit kelvin {expo: -1};
+    enddef;
+
+    def unit per_millimolar as
+        unit litre;
+        unit mole {pref: milli, expo: -1};
+    enddef;
+
+    def unit per_litre as
+        unit litre {expo: -1};
+    enddef;
+
+    def unit millimolar_per_millisecond as
+        unit mole {pref: milli};
+        unit litre {expo: -1};
+        unit second {pref: milli, expo: -1};
+    enddef;
+
+    def unit mole_to_millimole as
+        unit mole;
+        unit mole {pref: milli, expo: -1};
+    enddef;
+
+    def unit conductance_units as
+        unit siemens {pref: nano};
+    enddef;
+
+    def unit voltage_units as
+        unit volt {pref: milli};
+    enddef;
+
+    def unit Inverse_Voltage_ICC as
+        unit voltage_units {expo: -1};
+    enddef;
+
+    def unit time_units_ICC as
+        unit second;
+    enddef;
+
+    def unit current_units as
+        unit voltage_units;
+        unit conductance_units;
+    enddef;
+
+    def unit rate_constants_units_second as
+        unit time_units_ICC {expo: -1};
+    enddef;
+
+    def unit capacitance_units_ICC as
+        unit farad {pref: nano};
+    enddef;
+
+    def unit Temperature_units as
+        unit kelvin;
+    enddef;
+
+    def unit Inverse_Temperature_units_times_conductance as
+        unit Temperature_units {expo: -1};
+        unit conductance_units;
+    enddef;
+
+    def unit F_units_ICC as
+        unit mole {pref: nano, expo: -1};
+        unit coulomb {pref: micro};
+    enddef;
+
+    def unit R_units_ICC as
+        unit joule {pref: nano};
+        unit mole {pref: nano, expo: -1};
+        unit kelvin {expo: -1};
+    enddef;
+
+    def unit millimolar as
+        unit mole {pref: milli};
+        unit litre {expo: -1};
+    enddef;
+
+    def unit micromolar as
+        unit mole {pref: micro};
+        unit litre {expo: -1};
+    enddef;
+
+    def unit per_micromolar as
+        unit litre;
+        unit mole {pref: micro, expo: -1};
+    enddef;
+
+    def unit per_micromolarsecond as
+        unit mole {pref: micro, expo: -1};
+        unit litre {expo: 1};
+        unit second {expo: -1};
+    enddef;
+
+    def unit micromolar_per_second as
+        unit mole {pref: micro};
+        unit litre {expo: -1};
+        unit second {expo: -1};
+    enddef;
+
+    def unit micrometer as
+        unit meter {pref: micro};
+    enddef;
+
+    def unit per_micrometer3 as
+        unit metre {pref: micro, expo: -3};
+    enddef;
+
+    def unit micrometer2_per_time as
+        unit meter {pref: micro, expo: 2};
+        unit second {expo: -1};
+    enddef;
+
+    def unit per_time2 as
+        unit time_units_ICC {expo: -2};
+    enddef;
+
+    def unit kilopascals as
+        unit pascal {pref: kilo};
+    enddef;
+
+    def unit Hertz as
+        unit time_units_ICC {expo: -1};
+    enddef;
+
+    def comp Time as
+        var time: time_units {pub: out, priv: out};
+    enddef;
+
+    // SMC components based on Corrias and Buist 2007 doi:10.1007/s10439-007-9324-8
+
+    def comp Environment as
+        var T: Temperature_units {init: 310, priv: out};
+        var T_exp: Temperature_units {init: 297, priv: out};
+        var F: F_units {init: 96486, pub: out, priv: out};
+        var R: R_units {init: 8314.4, priv: out};
+        var Q10Ca: dimensionless {init: 2.1, priv: out};
+        var Q10K: dimensionless {init: 1.365, priv: out};
+        var Q10Na: dimensionless {init: 2.45, priv: out};
+        var Ca_o: millimolar {init: 2.5, pub: out, priv: out};
+        var Na_o: millimolar {init: 137, pub: out, priv: out};
+        var K_o: millimolar {init: 5.9, pub: out, priv: out};
+        var Cl_o: millimolar {init: 134, pub: out, priv: out};
+        var T_correction_Na: dimensionless {pub: out, priv: out};
+        var T_correction_K: dimensionless {pub: out, priv: out};
+        var T_correction_Ca: dimensionless {pub: out, priv: out};
+        var T_correction_BK: conductance_units {pub: out, priv: out};
+        var FoRT: Inverse_Voltage_units {pub: out, priv: out};
+        var RToF: voltage_units {pub: out, priv: out};
+
+        FoRT = F/(R*T);
+        RToF = R*T/F;
+        T_correction_Ca = pow(Q10Ca, (T-T_exp)/10{Temperature_units});
+        T_correction_K = pow(Q10K, (T-T_exp)/10{Temperature_units});
+        T_correction_Na = pow(Q10Na, (T-T_exp)/10{Temperature_units});
+        T_correction_BK = 1.1{Inverse_Temperature_units_times_conductance}*(T-T_exp);
+    enddef;
+
+    def comp SM_Membrane as
+        var Cm_SM: capacitance_units {init: 77};
+        var Vol_SM: volume_units {init: 3500, pub: out, priv: out};
+        var{V_SMC} Vm_SM: voltage_units {init: -69.75, pub: out, priv: out};
+        var time: time_units {pub: in, priv: out};
+        var{cytosolic_calcium_concentration} Ca_i: millimolar {init: 0.00008, pub: out, priv: out};
+        var Na_i: millimolar {init: 10, pub: out, priv: out};
+        var K_i: millimolar {init: 164, priv: out};
+        var Ca_o: millimolar {pub: in, priv: out};
+        var Na_o: millimolar {pub: in, priv: out};
+        var K_o: millimolar {pub: in, priv: out};
+        var Cl_o: millimolar {pub: in, priv: out};
+        var T_correction_Ca: dimensionless {pub: in, priv: out};
+        var T_correction_Na: dimensionless {pub: in, priv: out};
+        var T_correction_K: dimensionless {pub: in, priv: out};
+        var T_correction_BK: conductance_units {pub: in, priv: out};
+        var RToF: voltage_units {pub: in, priv: out};
+        var FoRT: Inverse_Voltage_units {pub: in, priv: out};
+        var F: F_units {pub: in, priv: out};
+        var I_Na_SM: current_units {priv: in};
+        var I_Ltype_SM: current_units {priv: in};
+        var I_LVA_SM: current_units {priv: in};
+        var I_kr_SM: current_units {priv: in};
+        var I_ka_SM: current_units {priv: in};
+        var I_BK_SM: current_units {priv: in};
+        var S_iSK: dimensionless {pub: in, priv: out};
+        var I_SK_SM: current_units {priv: in};
+        var I_NSCC_SM: current_units {priv: in};
+        var I_bk_SM: current_units {priv: in};
+        var J_CaSR_SM: millimolar_per_millisecond {priv: in};
+        var I_couple: current_units {pub: in};
+
+        ode(Vm_SM, time) = -1.0{dimensionless}*1.0{dimensionless}/Cm_SM*(I_Na_SM+I_SK_SM+I_Ltype_SM+I_LVA_SM+I_kr_SM+I_ka_SM+I_BK_SM+I_NSCC_SM+I_bk_SM+-1.0{dimensionless}*I_couple);
+        ode(Ca_i, time) = (-1{dimensionless}*I_Ltype_SM+-1{dimensionless}*I_LVA_SM)/(2.0{dimensionless}*0.001{mole_to_millimole}*F*Vol_SM)+-1{dimensionless}*J_CaSR_SM;
+    enddef;
+
+    def comp I_couple as
+        var g_couple: conductance_units {init: 1.3};
+        var I_couple: current_units {pub: out};
+        var V_ICC: voltage_units {pub: in};
+        var V_SMC: voltage_units {pub: in};
+
+        I_couple = g_couple*(V_ICC-V_SMC);
+    enddef;
+
+    def comp d_Ltype_SM as
+        var Vm_SM: voltage_units {pub: in};
+        var d_inf_Ltype_SM: dimensionless;
+        var tau_d_Ltype_SM: time_units;
+        var d_Ltype_SM: dimensionless {init: 0.0, pub: out};
+        var time: time_units {pub: in};
+        var T_correction_Ca: dimensionless {pub: in};
+
+        d_inf_Ltype_SM = 1.0{dimensionless}/(1.0{dimensionless}+exp((Vm_SM+17{voltage_units})/-4.3{voltage_units}));
+        tau_d_Ltype_SM = T_correction_Ca*0.47{time_units};
+        ode(d_Ltype_SM, time) = (d_inf_Ltype_SM-d_Ltype_SM)/tau_d_Ltype_SM;
+    enddef;
+
+    def comp f_Ltype_SM as
+        var Vm_SM: voltage_units {pub: in};
+        var f_inf_Ltype_SM: dimensionless;
+        var tau_f_Ltype_SM: time_units;
+        var f_Ltype_SM: dimensionless {init: 0.95, pub: out};
+        var time: time_units {pub: in};
+        var T_correction_Ca: dimensionless {pub: in};
+
+        f_inf_Ltype_SM = 1.0{dimensionless}/(1.0{dimensionless}+exp((Vm_SM+43{voltage_units})/8.9{voltage_units}));
+        tau_f_Ltype_SM = T_correction_Ca*86{time_units};
+        ode(f_Ltype_SM, time) = (f_inf_Ltype_SM-f_Ltype_SM)/tau_f_Ltype_SM;
+    enddef;
+
+    def comp f_ca_Ltype_SM as
+        var Ca_i: millimolar {pub: in};
+        var f_ca_inf_Ltype_SM: dimensionless;
+        var tau_f_ca_Ltype_SM: time_units;
+        var f_ca_Ltype_SM: dimensionless {init: 1.0, pub: out};
+        var time: time_units {pub: in};
+        var T_correction_Ca: dimensionless {pub: in};
+
+        f_ca_inf_Ltype_SM = 1.0{dimensionless}-1.0{dimensionless}/(1.0{dimensionless}+exp((Ca_i-0.00008999{millimolar}-0.000214{millimolar})/-0.0000131{millimolar}));
+        tau_f_ca_Ltype_SM = T_correction_Ca*2{time_units};
+        ode(f_ca_Ltype_SM, time) = (f_ca_inf_Ltype_SM-f_ca_Ltype_SM)/tau_f_ca_Ltype_SM;
+    enddef;
+
+    def comp I_Ltype_SM as
+        var I_Ltype_SM: current_units {pub: out};
+        var E_Ca: voltage_units;
+        var G_max_Ltype: conductance_units {init: 65};
+        var Vm_SM: voltage_units {pub: in, priv: out};
+        var f_Ltype_SM: dimensionless {priv: in};
+        var d_Ltype_SM: dimensionless {priv: in};
+        var f_ca_Ltype_SM: dimensionless {priv: in};
+        var RToF: voltage_units {pub: in};
+        var Ca_o: millimolar {pub: in};
+        var Ca_i: millimolar {pub: in, priv: out};
+        var T_correction_Ca: dimensionless {pub: in, priv: out};
+        var time: time_units {pub: in, priv: out};
+
+        E_Ca = 0.5{dimensionless}*RToF*ln(Ca_o/Ca_i);
+        I_Ltype_SM = G_max_Ltype*f_Ltype_SM*d_Ltype_SM*f_ca_Ltype_SM*(Vm_SM-E_Ca);
+    enddef;
+
+    def comp J_CaSR_SM as
+        var J_CaSR_SM: millimolar_per_millisecond {pub: out};
+        var J_max_CaSR: millimolar_per_millisecond {init: 0.31705};
+        var Ca_i: millimolar {pub: in};
+
+        J_CaSR_SM = J_max_CaSR*pow(Ca_i*1.0{per_millimolar}, 1.34{dimensionless});
+    enddef;
+
+    def comp d_LVA_SM as
+        var Vm_SM: voltage_units {pub: in};
+        var d_inf_LVA_SM: dimensionless;
+        var tau_d_LVA_SM: time_units;
+        var d_LVA_SM: dimensionless {init: 0.02, pub: out};
+        var time: time_units {pub: in};
+        var T_correction_Ca: dimensionless {pub: in};
+
+        d_inf_LVA_SM = 1.0{dimensionless}/(1.0{dimensionless}+exp((Vm_SM+27.5{voltage_units})/-10.9{voltage_units}));
+        tau_d_LVA_SM = T_correction_Ca*3.0{time_units};
+        ode(d_LVA_SM, time) = (d_inf_LVA_SM-d_LVA_SM)/tau_d_LVA_SM;
+    enddef;
+
+    def comp f_LVA_SM as
+        var Vm_SM: voltage_units {pub: in};
+        var f_inf_LVA_SM: dimensionless;
+        var tau_f_LVA_SM: time_units;
+        var f_LVA_SM: dimensionless {init: 0.99, pub: out};
+        var time: time_units {pub: in};
+        var T_correction_Ca: dimensionless {pub: in};
+
+        f_inf_LVA_SM = 1.0{dimensionless}/(1.0{dimensionless}+exp((Vm_SM+15.8{voltage_units})/7{voltage_units}));
+        tau_f_LVA_SM = T_correction_Ca*7.58{time_units}*exp(Vm_SM*0.00817{Inverse_Voltage_units});
+        ode(f_LVA_SM, time) = (f_inf_LVA_SM-f_LVA_SM)/tau_f_LVA_SM;
+    enddef;
+
+    def comp I_LVA_SM as
+        var I_LVA_SM: current_units {pub: out};
+        var E_Ca: voltage_units;
+        var G_max_LVA: conductance_units {init: 0.18};
+        var Vm_SM: voltage_units {pub: in, priv: out};
+        var f_LVA_SM: dimensionless {priv: in};
+        var d_LVA_SM: dimensionless {priv: in};
+        var RToF: voltage_units {pub: in};
+        var Ca_o: millimolar {pub: in};
+        var Ca_i: millimolar {pub: in};
+        var T_correction_Ca: dimensionless {pub: in, priv: out};
+        var time: time_units {pub: in, priv: out};
+
+        E_Ca = 0.5{dimensionless}*RToF*ln(Ca_o/Ca_i);
+        I_LVA_SM = G_max_LVA*f_LVA_SM*d_LVA_SM*(Vm_SM-E_Ca);
+    enddef;
+
+    def comp d_BK_SM as
+        var Vm_SM: voltage_units {pub: in};
+        var Ca_i: millimolar {pub: in};
+        var d_BK_SM: dimensionless {pub: out};
+        var time: time_units {pub: in};
+
+        d_BK_SM = 1.0{dimensionless}/(1.0{dimensionless}+exp(Vm_SM/-17{voltage_units}-2.0{dimensionless}*ln(Ca_i/0.001{millimolar})));
+    enddef;
+
+    def comp I_BK_SM as
+        var I_BK_SM: current_units {pub: out};
+        var Ca_i: millimolar {pub: in, priv: out};
+        var E_K: voltage_units;
+        var G_max_BK: conductance_units {init: 45.7};
+        var Vm_SM: voltage_units {pub: in, priv: out};
+        var d_BK_SM: dimensionless {priv: in};
+        var RToF: voltage_units {pub: in};
+        var K_o: millimolar {pub: in};
+        var K_i: millimolar {pub: in};
+        var T_correction_BK: conductance_units {pub: in};
+        var time: time_units {pub: in, priv: out};
+
+        E_K = RToF*ln(K_o/K_i);
+        I_BK_SM = (G_max_BK+T_correction_BK)*d_BK_SM*(Vm_SM-E_K);
+    enddef;
+
+    // active tension parameters based on Arner 1982 doi:10.1007/BF00580790
+
+    def comp active_tension as
+        var{tension} T: kilopascals;
+        var Ca50_0: micromolar {init: 0.5623413};
+        var S_iCa50: dimensionless {pub: in};
+        var Ca50: micromolar;
+        var h: dimensionless {init: 3.4};
+        var T_max: kilopascals {init: 313};
+        var Ca_i_SM: micromolar {pub: in};
+
+        Ca50 = Ca50_0*(1{dimensionless}+S_iCa50);
+        T = T_max*pow(Ca_i_SM, h)/(pow(Ca_i_SM, h)+pow(Ca50, h));
+    enddef;
+
+    def comp neural_input as
+        var time: time_units_ICC {pub: in};
+        var{excitatory_neural} f_e: dimensionless {init: 0};
+        var{inhibitory_neural} f_i: dimensionless {init: 0};
+        var{neural_stim_start} ns_start: time_units_ICC {init: 120};
+        var{neural_stim_end} ns_end: time_units_ICC {init: 180};
+        var w_iICC: dimensionless;
+        var w_iSMC: dimensionless;
+        var w_e: dimensionless;
+        var f_max: Hertz {init: 10};
+        var k_iAno1: dimensionless {init: 0.326};
+        var k_iNSCC: dimensionless {init: 0.775};
+        var k_iCa50: dimensionless {init: 0.882};
+        var k_iSK: dimensionless {init: 0.441};
+        var k_eIP3: dimensionless {init: 0.92};
+        var S_iAno1: dimensionless {pub: out};
+        var S_iNSCC: dimensionless {pub: out};
+        var S_iCa50: dimensionless {pub: out};
+        var S_iSK: dimensionless {pub: out};
+        var S_eIP3: dimensionless {pub: out};
+        var p_iICC: dimensionless {init: 3.17};
+        var p_iSMC: dimensionless {init: 1.17};
+        var p_e: dimensionless {init: 5};
+
+        w_iICC = sel
+            case (time > ns_start) and (time < ns_end):
+                (1{dimensionless}-exp(-p_iICC*f_i/f_max))/(1{dimensionless}-exp(-p_iICC));
+            otherwise:
+                0{dimensionless};
+        endsel;
+
+        w_iSMC = sel
+            case (time > ns_start) and (time < ns_end):
+                (1{dimensionless}-exp(-p_iSMC*f_i/f_max))/(1{dimensionless}-exp(-p_iSMC));
+            otherwise:
+                0{dimensionless};
+        endsel;
+
+        w_e = sel
+            case (time > ns_start) and (time < ns_end):
+                (1{dimensionless}-exp(-p_e*f_e/f_max))/(1{dimensionless}-exp(-p_e));
+            otherwise:
+                0{dimensionless};
+        endsel;
+
+        S_iAno1 = w_iICC*k_iAno1;
+        S_iNSCC = w_iICC*k_iNSCC;
+        S_iCa50 = w_iSMC*k_iCa50;
+        S_iSK = w_iSMC*k_iSK;
+        S_eIP3 = w_e*k_eIP3;
+    enddef;
+
+    // SK channel based on Kennedy, Bers, Chiamvimonvat, and Sato 2017 doi:10.1113/JP273626
+
+    def comp x_SK_SM as
+        var Vm_SM: voltage_units {pub: in};
+        var Ca_i: micromolar {pub: in};
+        var x_SK_SM: dimensionless {init: 0, pub: out};
+        var time: time_units {pub: in};
+        var x_SK_inf_SM: dimensionless;
+        var tau_x_SK_SM: time_units;
+        var n: dimensionless {init: 2};
+        var EC50: micromolar {init: 0.3};
+
+        x_SK_inf_SM = 0.81{dimensionless}*pow(Ca_i, n)/(pow(Ca_i, n)+pow(EC50, n));
+        tau_x_SK_SM = 1{time_units}/(0.047{per_micromolar}*Ca_i+1{dimensionless}/76{dimensionless});
+        ode(x_SK_SM, time) = (x_SK_inf_SM-x_SK_SM)/tau_x_SK_SM;
+    enddef;
+
+    // SK
+
+    def comp I_SK_SM as
+        var I_SK_SM: current_units {pub: out};
+        var Ca_i: millimolar {pub: in, priv: out};
+        var E_K: voltage_units;
+        var G_max_SK: conductance_units {init: 3.5};
+        var S_iSK: dimensionless {pub: in};
+        var Vm_SM: voltage_units {pub: in, priv: out};
+        var x_SK_SM: dimensionless {priv: in};
+        var RToF: voltage_units {pub: in};
+        var K_o: millimolar {pub: in};
+        var K_i: millimolar {pub: in};
+        var T_correction_BK: conductance_units {pub: in};
+        var time: time_units {pub: in, priv: out};
+
+        E_K = RToF*ln(K_o/K_i);
+        I_SK_SM = G_max_SK*x_SK_SM*S_iSK*(Vm_SM-E_K);
+    enddef;
+
+    def comp I_bk_SM as
+        var I_bk_SM: current_units {pub: out};
+        var E_K: voltage_units;
+        var G_max_bk: conductance_units {init: 0.0144};
+        var Vm_SM: voltage_units {pub: in};
+        var RToF: voltage_units {pub: in};
+        var K_o: millimolar {pub: in};
+        var K_i: millimolar {pub: in};
+
+        E_K = RToF*ln(K_o/K_i);
+        I_bk_SM = G_max_bk*(Vm_SM-E_K);
+    enddef;
+
+    def comp xr1_SM as
+        var Vm_SM: voltage_units {pub: in};
+        var xr1_inf_SM: dimensionless;
+        var tau_xr1_SM: time_units;
+        var xr1_SM: dimensionless {init: 0.0, pub: out};
+        var time: time_units {pub: in};
+        var T_correction_K: dimensionless {pub: in};
+
+        xr1_inf_SM = 1.0{dimensionless}/(1.0{dimensionless}+exp((Vm_SM+27{voltage_units})/-5.0{voltage_units}));
+        tau_xr1_SM = T_correction_K*80{time_units};
+        ode(xr1_SM, time) = (xr1_inf_SM-xr1_SM)/tau_xr1_SM;
+    enddef;
+
+    def comp xr2_SM as
+        var Vm_SM: voltage_units {pub: in};
+        var xr2_inf_SM: dimensionless;
+        var tau_xr2_SM: time_units;
+        var xr2_SM: dimensionless {init: 0.82, pub: out};
+        var time: time_units {pub: in};
+        var T_correction_K: dimensionless {pub: in};
+
+        xr2_inf_SM = 0.2{dimensionless}+0.8{dimensionless}/(1.0{dimensionless}+exp((Vm_SM+58{voltage_units})/10{voltage_units}));
+        tau_xr2_SM = T_correction_K*(-707{time_units}+1481{time_units}*exp((Vm_SM+36{voltage_units})/95{voltage_units}));
+        ode(xr2_SM, time) = (xr2_inf_SM-xr2_SM)/tau_xr2_SM;
+    enddef;
+
+    def comp I_kr_SM as
+        var I_kr_SM: current_units {pub: out};
+        var E_K: voltage_units;
+        var G_max_kr_SM: conductance_units {init: 35};
+        var Vm_SM: voltage_units {pub: in, priv: out};
+        var xr1_SM: dimensionless {priv: in};
+        var xr2_SM: dimensionless {priv: in};
+        var RToF: voltage_units {pub: in};
+        var K_o: millimolar {pub: in};
+        var K_i: millimolar {pub: in};
+        var T_correction_K: dimensionless {pub: in, priv: out};
+        var time: time_units {pub: in, priv: out};
+
+        E_K = RToF*ln(K_o/K_i);
+        I_kr_SM = G_max_kr_SM*xr1_SM*xr2_SM*(Vm_SM-E_K);
+    enddef;
+
+    def comp m_Na_SM as
+        var Vm_SM: voltage_units {pub: in};
+        var m_inf_Na: dimensionless;
+        var tau_m_Na: time_units;
+        var m_Na_SM: dimensionless {init: 0.005, pub: out};
+        var time: time_units {pub: in};
+        var T_correction_Na: dimensionless {pub: in};
+
+        m_inf_Na = 1.0{dimensionless}/(1.0{dimensionless}+exp((Vm_SM+47{voltage_units})/-4.8{voltage_units}));
+        tau_m_Na = T_correction_Na*(Vm_SM*-0.017{Inverse_Voltage_units}*1{time_units}+0.440{time_units});
+        ode(m_Na_SM, time) = (m_inf_Na-m_Na_SM)/tau_m_Na;
+    enddef;
+
+    def comp h_Na_SM as
+        var Vm_SM: voltage_units {pub: in};
+        var h_inf_Na: dimensionless;
+        var tau_h_Na: time_units;
+        var h_Na_SM: dimensionless {init: 0.05787, pub: out};
+        var time: time_units {pub: in};
+        var T_correction_Na: dimensionless {pub: in};
+
+        h_inf_Na = 1.0{dimensionless}/(1.0{dimensionless}+exp((Vm_SM+78{voltage_units})/3{voltage_units}));
+        tau_h_Na = T_correction_Na*(Vm_SM*-0.25{Inverse_Voltage_units}*1{time_units}+5.50{time_units});
+        ode(h_Na_SM, time) = (h_inf_Na-h_Na_SM)/tau_h_Na;
+    enddef;
+
+    def comp I_Na_SM as
+        var I_Na_SM: current_units {pub: out};
+        var E_Na: voltage_units;
+        var G_max_Na_SM: conductance_units {init: 3};
+        var Vm_SM: voltage_units {pub: in, priv: out};
+        var h_Na_SM: dimensionless {priv: in};
+        var m_Na_SM: dimensionless {priv: in};
+        var RToF: voltage_units {pub: in};
+        var Na_o: millimolar {pub: in};
+        var Na_i: millimolar {pub: in};
+        var T_correction_Na: dimensionless {pub: in, priv: out};
+        var time: time_units {pub: in, priv: out};
+
+        E_Na = RToF*ln(Na_o/Na_i);
+        I_Na_SM = G_max_Na_SM*h_Na_SM*m_Na_SM*(Vm_SM-E_Na);
+    enddef;
+
+    def comp xa1_SM as
+        var Vm_SM: voltage_units {pub: in};
+        var xa1_inf_SM: dimensionless;
+        var tau_xa1_SM: time_units;
+        var xa1_SM: dimensionless {init: 0.00414, pub: out};
+        var time: time_units {pub: in};
+        var T_correction_K: dimensionless {pub: in};
+
+        xa1_inf_SM = 1.0{dimensionless}/(1.0{dimensionless}+exp((Vm_SM+26.5{voltage_units})/-7.9{voltage_units}));
+        tau_xa1_SM = T_correction_K*(31.8{time_units}+175{time_units}*exp(-0.5{dimensionless}*sqr((Vm_SM+44.4{voltage_units})/22.3{voltage_units})));
+        ode(xa1_SM, time) = (xa1_inf_SM-xa1_SM)/tau_xa1_SM;
+    enddef;
+
+    def comp xa2_SM as
+        var Vm_SM: voltage_units {pub: in};
+        var xa2_inf_SM: dimensionless;
+        var tau_xa2_SM: time_units;
+        var xa2_SM: dimensionless {init: 0.72, pub: out};
+        var time: time_units {pub: in};
+        var T_correction_K: dimensionless {pub: in};
+
+        xa2_inf_SM = 0.1{dimensionless}+0.9{dimensionless}/(1.0{dimensionless}+exp((Vm_SM+65{voltage_units})/6.2{voltage_units}));
+        tau_xa2_SM = T_correction_K*90{time_units};
+        ode(xa2_SM, time) = (xa2_inf_SM-xa2_SM)/tau_xa2_SM;
+    enddef;
+
+    def comp I_ka_SM as
+        var I_ka_SM: current_units {pub: out};
+        var E_K: voltage_units;
+        var G_max_ka_SM: conductance_units {init: 9};
+        var Vm_SM: voltage_units {pub: in, priv: out};
+        var xa1_SM: dimensionless {priv: in};
+        var xa2_SM: dimensionless {priv: in};
+        var RToF: voltage_units {pub: in};
+        var K_o: millimolar {pub: in};
+        var K_i: millimolar {pub: in};
+        var T_correction_K: dimensionless {pub: in, priv: out};
+        var time: time_units {pub: in, priv: out};
+
+        E_K = RToF*ln(K_o/K_i);
+        I_ka_SM = G_max_ka_SM*xa1_SM*xa2_SM*(Vm_SM-E_K);
+    enddef;
+
+    def comp m_NSCC_SM as
+        var Vm_SM: voltage_units {pub: in};
+        var m_inf_NSCC_SM: dimensionless;
+        var tau_m_NSCC_SM: time_units;
+        var m_NSCC_SM: dimensionless {init: 0.0, pub: out};
+        var time: time_units {pub: in};
+
+        m_inf_NSCC_SM = 1.0{dimensionless}/(1.0{dimensionless}+exp((Vm_SM+25.0{voltage_units})/-20{voltage_units}));
+        tau_m_NSCC_SM = 1.0{dimensionless}/(1.0{dimensionless}+exp((Vm_SM+66{voltage_units})/-26{voltage_units}))*150{time_units};
+        ode(m_NSCC_SM, time) = (m_inf_NSCC_SM-m_NSCC_SM)/tau_m_NSCC_SM;
+    enddef;
+
+    def comp I_NSCC_SM as
+        var I_NSCC_SM: current_units {pub: out};
+        var E_NSCC: voltage_units {init: -28};
+        var G_max_NSCC_SM: conductance_units {init: 50};
+        var Vm_SM: voltage_units {pub: in, priv: out};
+        var Ca_i: millimolar {pub: in, priv: out};
+        var Ach: millimolar {init: 0.00001};
+        var m_NSCC_SM: dimensionless {priv: in};
+        var f_ca_NSCC_SM: dimensionless;
+        var rach_NSCC_SM: dimensionless;
+        var RToF: voltage_units {pub: in};
+        var Na_o: millimolar {pub: in};
+        var Na_i: millimolar {pub: in};
+        var K_o: millimolar {pub: in};
+        var K_i: millimolar {pub: in};
+        var time: time_units {pub: in, priv: out};
+
+        f_ca_NSCC_SM = 1.0{dimensionless}/(1.0{dimensionless}+pow(Ca_i/0.0002{millimolar}, -4.0{dimensionless}));
+        rach_NSCC_SM = 1.0{dimensionless}/(1.0{dimensionless}+0.01{millimolar}/Ach);
+        I_NSCC_SM = G_max_NSCC_SM*m_NSCC_SM*f_ca_NSCC_SM*rach_NSCC_SM*(Vm_SM-E_NSCC);
+    enddef;
+
+    // ICC components based on Lees-Green, Gibbons, Farrugia, Sneyd, and Cheng 2014 doi:10.1152/ajpgi.00449.2013
+
+    def comp Parameters as
+        var p2m: dimensionless {init: 1e-09, pub: out};
+        var umc2L: dimensionless {init: 1e+15, pub: out};
+        var T: Temperature_units {init: 310, pub: out};
+        var F: F_units_ICC {init: 96.4846, pub: out};
+        var R: R_units_ICC {init: 8.3144, pub: out};
+        var z_ca: dimensionless {init: 2, pub: out};
+        var z_na: dimensionless {init: 1, pub: out};
+        var z_k: dimensionless {init: 1, pub: out};
+        var z_cl: dimensionless {init: -1, pub: out};
+        var Ca_o: micromolar {init: 2000, pub: out};
+        var Cl_i: micromolar {init: 78000, pub: out};
+        var Cl_o: micromolar {init: 166000, pub: out};
+        var{intracellular_potassium_concentration_ICC} K_i: micromolar {init: 140000, pub: out};
+        var K_o: micromolar {init: 5000, pub: out};
+        var Na_i: micromolar {init: 30000, pub: out};
+        var Na_o: micromolar {init: 140000, pub: out};
+    enddef;
+
+    def comp Volume as
+        var cellVol: litre {init: 1e-12};
+        var cellPropER: dimensionless {init: 0.1};
+        var cellPropCyto: dimensionless {init: 0.7};
+        var volER: litre {pub: out};
+        var volCyto: litre {pub: out};
+
+        volER = cellVol*cellPropER;
+        volCyto = cellVol*cellPropCyto;
+    enddef;
+
+    def comp Nernst as
+        var T: Temperature_units {pub: in};
+        var F: F_units_ICC {pub: in};
+        var R: R_units_ICC {pub: in};
+        var z_na: dimensionless {pub: in};
+        var z_k: dimensionless {pub: in};
+        var z_cl: dimensionless {pub: in};
+        var z_ca: dimensionless {pub: in};
+        var Cl_i: micromolar {pub: in};
+        var Cl_o: micromolar {pub: in};
+        var K_i: micromolar {pub: in};
+        var K_o: micromolar {pub: in};
+        var Na_i: micromolar {pub: in};
+        var Na_o: micromolar {pub: in};
+        var Ca_i: micromolar {pub: in};
+        var Ca_o: micromolar {pub: in};
+        var E_NSCC: voltage_units {init: 0, pub: out};
+        var E_NSV: voltage_units {init: 0, pub: out};
+        var E_SOC: voltage_units {init: 0, pub: out};
+        var E_Ca: voltage_units {pub: out};
+        var E_Cl: voltage_units {pub: out};
+        var E_Na: voltage_units {pub: out};
+        var E_K: voltage_units {pub: out};
+
+        E_Ca = R*T/(F*z_ca)*ln(Ca_o/Ca_i);
+        E_Cl = R*T/(F*z_cl)*ln(Cl_o/Cl_i);
+        E_Na = R*T/(F*z_na)*ln(Na_o/Na_i);
+        E_K = R*T/(F*z_k)*ln(K_o/K_i);
+    enddef;
+
+    def comp d_CaT as
+        var Vm: voltage_units {pub: in};
+        var time: time_units_ICC {pub: in};
+        var d_CaT_Vh: voltage_units {init: -40};
+        var d_CaT_S: voltage_units {init: -3};
+        var d_CaT_tau: time_units_ICC {init: 0.006};
+        var d_CaT_inf: dimensionless;
+        var d_CaT: dimensionless {init: 0.001271016263081, pub: out};
+
+        d_CaT_inf = 1{dimensionless}/(1{dimensionless}+exp((Vm-d_CaT_Vh)/d_CaT_S));
+        ode(d_CaT, time) = (d_CaT_inf-d_CaT)/d_CaT_tau;
+    enddef;
+
+    def comp f_CaT as
+        var Vm: voltage_units {pub: in};
+        var time: time_units_ICC {pub: in};
+        var f_CaT_Vh: voltage_units {init: -55};
+        var f_CaT_S: voltage_units {init: 5};
+        var f_CaT_tau: time_units_ICC {init: 0.1};
+        var f_CaT_inf: dimensionless;
+        var f_CaT: dimensionless {init: 0.5, pub: out};
+
+        f_CaT_inf = 1{dimensionless}/(1{dimensionless}+exp((Vm-f_CaT_Vh)/f_CaT_S));
+        ode(f_CaT, time) = (f_CaT_inf-f_CaT)/f_CaT_tau;
+    enddef;
+
+    def comp I_CaT as
+        var g_CaT: conductance_units {init: 4};
+        var time: time_units_ICC {pub: in, priv: out};
+        var Vm: voltage_units {pub: in, priv: out};
+        var p2m: dimensionless {pub: in};
+        var F: F_units_ICC {pub: in};
+        var z_ca: dimensionless {pub: in};
+        var E_Ca: voltage_units {pub: in};
+        var volCyto: litre {pub: in};
+        var f_CaT: dimensionless {pub: out, priv: in};
+        var d_CaT: dimensionless {pub: out, priv: in};
+        var I_CaT: current_units {pub: out};
+        var J_CaT: micromolar_per_second {pub: out};
+
+        I_CaT = g_CaT*d_CaT*f_CaT*(Vm-E_Ca);
+        J_CaT = -p2m*I_CaT/(z_ca*F*volCyto);
+    enddef;
+
+    def comp P_SOC as
+        var SOC_h: micromolar {init: 200, pub: out};
+        var Ca_er: micromolar {pub: in};
+        var SOC_n: dimensionless {init: 8, pub: out};
+        var P_SOC: dimensionless {pub: out};
+
+        P_SOC = 1{dimensionless}/(1{dimensionless}+pow(Ca_er/SOC_h, SOC_n));
+    enddef;
+
+    def comp I_SOC as
+        var g_SOC: conductance_units {init: 0.1};
+        var Ca_er: micromolar {pub: in, priv: out};
+        var p2m: dimensionless {pub: in};
+        var F: F_units_ICC {pub: in};
+        var z_ca: dimensionless {pub: in};
+        var E_Ca: voltage_units {pub: in};
+        var Vm: voltage_units {pub: in, priv: out};
+        var SOCPropCa: dimensionless {init: 1, pub: out};
+        var volCyto: litre {pub: in};
+        var P_SOC: dimensionless {pub: out, priv: in};
+        var I_SOC: current_units {pub: out};
+        var J_SOC: micromolar_per_second {pub: out};
+
+        I_SOC = g_SOC*P_SOC*(Vm-E_Ca);
+        J_SOC = -p2m*SOCPropCa*I_SOC/(z_ca*F*volCyto);
+    enddef;
+
+    def comp I_BK as
+        var g_BK: conductance_units {init: 9};
+        var Vm: voltage_units {pub: in, priv: out};
+        var E_K: voltage_units {pub: in};
+        var I_BK: current_units {pub: out};
+
+        I_BK = g_BK*(Vm-E_K);
+    enddef;
+
+    def comp I_stim as
+        var{membrane_stimulus_current} I_stim: current_units {pub: out};
+        var{pacing_amplitude} stim_amp: current_units {init: 0};
+        var{pacing_start_time} stim_start: time_units_ICC {init: 18};
+        var{pacing_pulse_width} stim_PW: time_units_ICC {init: 0.5};
+        var time: time_units_ICC {pub: in, priv: out};
+
+        I_stim = sel
+            case (time > stim_start) and (time < stim_start+stim_PW):
+                stim_amp;
+            otherwise:
+                0{current_units};
+        endsel;
+
+        // a value of -168 will induce a SW at 18.5 s
+    enddef;
+
+    def comp P_NSCC as
+        var Ca_i: micromolar {pub: in};
+        var P_NSCC: dimensionless {pub: out};
+        var n_NSCC: dimensionless {init: 4};
+        var Ca_NSCC: micromolar {init: 1.8};
+
+        P_NSCC = pow(Ca_i, n_NSCC)/(pow(Ca_NSCC, n_NSCC)+pow(Ca_i, n_NSCC));
+    enddef;
+
+    def comp I_NSCC as
+        var g_NSCC: conductance_units {init: 30};
+        var Ca_i: micromolar {pub: in, priv: out};
+        var I_NSCC: current_units {pub: out};
+        var P_NSCC: dimensionless {priv: in};
+        var Vm: voltage_units {pub: in, priv: out};
+        var E_NSCC: voltage_units {pub: in};
+        var S_iNSCC: dimensionless {pub: in};
+
+        I_NSCC = g_NSCC*(1{dimensionless}-S_iNSCC)*P_NSCC*(Vm-E_NSCC);
+    enddef;
+
+    def comp d_Ano1 as
+        var Vm: voltage_units {pub: in};
+        var time: time_units_ICC {pub: in};
+        var volCyto: litre {pub: in};
+        var J_SOC: micromolar_per_second {pub: in};
+        var Dc: micrometer2_per_time {init: 250};
+        var Dm: micrometer2_per_time {init: 75};
+        var Bm: micromolar {init: 50};
+        var Km: micromolar {init: 1};
+        var kc: Inverse_Voltage_ICC {init: 0.01248, pub: out};
+        var nSOC: dimensionless {init: 50, pub: out};
+        var Ca_i: micromolar {pub: in};
+        var rad: micrometer;
+        var mouthCa: micromolar_per_second;
+        var localCa: micromolar;
+        var d_Ano1_tau: time_units_ICC;
+        var d_Ano1_tscale: dimensionless {init: 1};
+        var colocalRadius: micrometer {init: 0.05};
+        var d_Ano1_inf: dimensionless;
+        var d_Ano1: dimensionless {init: 0.01, pub: out};
+        var Ano1_n: dimensionless {init: 2};
+        var Ano1_Vh: voltage_units {init: -100};
+        var Ano1_s: Inverse_Voltage_ICC {init: 0.0156};
+        var S_iAno1: dimensionless {pub: in};
+        var h_Ano1: dimensionless {pub: out};
+
+        rad = colocalRadius;
+        mouthCa = 1e15{per_litre}*J_SOC*volCyto/nSOC;
+        localCa = (-Dc*Km+mouthCa/(2{per_micrometer3}*pi*rad)+Dc*Ca_i-Dm*Bm*Km/(Km+Ca_i)+sqrt(sqr(Dc*Km+mouthCa/(2{per_micrometer3}*pi*rad)+Dc*Ca_i-Dm*Bm*Km/(Km+Ca_i))+4{dimensionless}*Dc*Dm*Bm*Km))/(2{dimensionless}*Dc);
+        d_Ano1_tau = d_Ano1_tscale*(81.63{time_units_ICC}*exp(-0.57{per_micromolar}*localCa)+76.17{time_units_ICC}*exp(-0.05374{per_micromolar}*localCa)*exp(Vm/(70.3{voltage_units}*exp(0.153{per_micromolar}*localCa))))*1e-3{dimensionless};
+        d_Ano1_inf = 1{dimensionless}/((1{dimensionless}+exp((Ano1_Vh-Vm)*Ano1_s))*(1{dimensionless}+pow(localCa/(1.39{micromolar}*exp(-kc*Vm)), -Ano1_n)));
+        h_Ano1 = d_Ano1*S_iAno1*1{per_time2}/(1{per_time2}+sqr((d_Ano1_inf-d_Ano1)/d_Ano1_tau));
+        ode(d_Ano1, time) = (d_Ano1_inf-d_Ano1)/d_Ano1_tau;
+    enddef;
+
+    def comp I_Ano1 as
+        var g_Ano1: conductance_units {init: 20};
+        var Vm: voltage_units {pub: in, priv: out};
+        var time: time_units_ICC {pub: in, priv: out};
+        var J_SOC: micromolar_per_second {pub: in, priv: out};
+        var Ca_i: micromolar {pub: in, priv: out};
+        var volCyto: litre {pub: in, priv: out};
+        var E_Cl: voltage_units {pub: in};
+        var I_Ano1: current_units {pub: out};
+        var d_Ano1: dimensionless {pub: out, priv: in};
+        var h_Ano1: dimensionless {priv: in};
+        var S_iAno1: dimensionless {pub: in, priv: out};
+
+        I_Ano1 = g_Ano1*(d_Ano1-h_Ano1)*(Vm-E_Cl);
+    enddef;
+
+    def comp J_SERCA as
+        var Ke: micromolar {init: 0.1};
+        var J_SERCA: micromolar_per_second {pub: out};
+        var Ve: micromolar_per_second {init: 160};
+        var fc: dimensionless {init: 0.01, pub: out};
+        var fe: dimensionless {init: 1, pub: out};
+        var Ca_i: micromolar {pub: in};
+
+        J_SERCA = Ve*sqr(Ca_i)/(sqr(Ke)+sqr(Ca_i));
+    enddef;
+
+    def comp Ca_er as
+        var time: time_units_ICC {pub: in};
+        var fe: dimensionless {pub: in};
+        var volER: litre {pub: in};
+        var volCyto: litre {pub: in};
+        var Ca_er: micromolar {init: 290.0, pub: out};
+        var J_SERCA: micromolar_per_second {pub: in};
+        var J_IPR: micromolar_per_second {pub: in};
+
+        ode(Ca_er, time) = fe*(J_SERCA-J_IPR)*volCyto/volER;
+    enddef;
+
+    def comp y_bind as
+        var time: time_units_ICC {pub: in};
+        var Ca_i: micromolar {pub: in};
+        var k1: per_micromolarsecond {init: 500, pub: out};
+        var k2: per_micromolarsecond {init: 0.25};
+        var k3: per_micromolarsecond {init: 500};
+        var k4: per_micromolarsecond {init: 0.25};
+        var k5: per_micromolarsecond {init: 25, pub: out};
+        var k_1: rate_constants_units_second {init: 65};
+        var k_2: rate_constants_units_second {init: 0.2625};
+        var k_3: rate_constants_units_second {init: 471.5};
+        var k_4: rate_constants_units_second {init: 0.03625};
+        var k_5: rate_constants_units_second {init: 2.05};
+        var IP3: micromolar {pub: in};
+        var K1: micromolar {pub: out};
+        var K2: micromolar {pub: out};
+        var K3: micromolar {pub: out};
+        var K4: micromolar {pub: out};
+        var K5: micromolar {pub: out};
+        var y: dimensionless {init: 0.4, pub: out};
+        var phi1: rate_constants_units_second;
+        var phi2: rate_constants_units_second;
+
+        K1 = k_1/k1;
+        K2 = k_2/k2;
+        K3 = k_3/k3;
+        K4 = k_4/k4;
+        K5 = k_5/k5;
+        phi1 = (k_4*K2*K1+k_2*K4*IP3)*Ca_i/(K4*K2*(K1+IP3));
+        phi2 = (k_2*IP3+k_4*K3)/(K3+IP3);
+        ode(y, time) = phi1*(1{dimensionless}-y)-phi2*y;
+    enddef;
+
+    def comp J_IPR as
+        var time: time_units_ICC {pub: in, priv: out};
+        var Ca_i: micromolar {pub: in, priv: out};
+        var Ca_er: micromolar {pub: in};
+        var kipr: rate_constants_units_second {init: 7};
+        var Pipr: dimensionless;
+        var Jer: rate_constants_units_second {init: 0.01};
+        var IP3_base: micromolar {init: 0.5};
+        var K1: micromolar {priv: in};
+        var K5: micromolar {priv: in};
+        var y: dimensionless {pub: out, priv: in};
+        var J_SERCA: micromolar_per_second {pub: in};
+        var J_IPR: micromolar_per_second {pub: out};
+        var IP3: micromolar {priv: out};
+        var S_eIP3: dimensionless {pub: in};
+
+        IP3 = IP3_base*(1{dimensionless}+S_eIP3);
+        Pipr = pow(IP3*Ca_i*(1{dimensionless}-y)/((IP3+K1)*(Ca_i+K5)), 3{dimensionless});
+        J_IPR = (kipr*Pipr+Jer)*(Ca_er-Ca_i);
+    enddef;
+
+    def comp J_PMCA as
+        var g_PMCA: dimensionless {init: 1};
+        var Ca_i: micromolar {pub: in};
+        var J_PMCA_max: micromolar_per_second {init: 100};
+        var K_PMCA: micromolar {init: 0.1};
+        var n_PMCA: dimensionless {init: 2};
+        var J_PMCA: micromolar_per_second {pub: out};
+
+        J_PMCA = g_PMCA*J_PMCA_max*1{dimensionless}/(1{dimensionless}+pow(K_PMCA/Ca_i, n_PMCA));
+    enddef;
+
+    def comp I_BNa as
+        var g_BNa: conductance_units {init: 2};
+        var Vm: voltage_units {pub: in};
+        var E_Na: voltage_units {pub: in};
+        var I_BNa: current_units {pub: out};
+
+        I_BNa = g_BNa*(Vm-E_Na);
+    enddef;
+
+    def comp ICC_Membrane as
+        var{membrane_voltage} Vm: voltage_units {init: -66.0, pub: out, priv: out};
+        var time: time_units_ICC {pub: in, priv: out};
+        var{membrane_capacitance} Cm: capacitance_units_ICC {init: 0.025};
+        var fc: dimensionless {priv: in};
+        var f_CaT: dimensionless {priv: in};
+        var d_CaT: dimensionless {priv: in};
+        var I_CaT: current_units {priv: in};
+        var J_CaT: micromolar_per_second {priv: in};
+        var I_NSCC: current_units {priv: in};
+        var I_stim: current_units {priv: in};
+        var I_BNa: current_units {priv: in};
+        var I_BK: current_units {priv: in};
+        var d_Ano1: dimensionless {priv: in};
+        var I_Ano1: current_units {priv: in};
+        var I_SOC: current_units {priv: in};
+        var J_SOC: micromolar_per_second {priv: in};
+        var J_IPR: micromolar_per_second {priv: in};
+        var J_PMCA: micromolar_per_second {priv: in};
+        var J_SERCA: micromolar_per_second {priv: in};
+        var Ca_er: micromolar {priv: in};
+        var Ca_i: micromolar {init: 0.14, pub: out, priv: out};
+        var Iion: current_units {pub: out};
+        var S_eIP3: dimensionless {pub: in, priv: out};
+        var S_iNSCC: dimensionless {pub: in, priv: out};
+        var S_iAno1: dimensionless {pub: in, priv: out};
+
+        Iion = I_SOC+I_Ano1+I_CaT+I_BK+I_BNa+I_NSCC+I_stim;
+        ode(Vm, time) = -Iion/Cm;
+        ode(Ca_i, time) = fc*(J_IPR-J_SERCA+J_SOC+J_CaT-J_PMCA);
+    enddef;
+
+    // MAPPING 
+
+    // ICC 
+
+    def map between Parameters and Nernst for
+        vars z_ca and z_ca;
+        vars z_na and z_na;
+        vars z_k and z_k;
+        vars z_cl and z_cl;
+        vars Cl_i and Cl_i;
+        vars Cl_o and Cl_o;
+        vars K_i and K_i;
+        vars K_o and K_o;
+        vars Na_i and Na_i;
+        vars Na_o and Na_o;
+        vars Ca_o and Ca_o;
+        vars T and T;
+        vars F and F;
+        vars R and R;
+    enddef;
+
+    def map between d_CaT and I_CaT for
+        vars Vm and Vm;
+        vars d_CaT and d_CaT;
+        vars time and time;
+    enddef;
+
+    def map between f_CaT and I_CaT for
+        vars Vm and Vm;
+        vars f_CaT and f_CaT;
+        vars time and time;
+    enddef;
+
+    def map between Volume and I_CaT for
+        vars volCyto and volCyto;
+    enddef;
+
+    def map between Nernst and I_CaT for
+        vars E_Ca and E_Ca;
+    enddef;
+
+    def map between Parameters and I_CaT for
+        vars p2m and p2m;
+        vars z_ca and z_ca;
+        vars F and F;
+    enddef;
+
+    def map between Volume and I_SOC for
+        vars volCyto and volCyto;
+    enddef;
+
+    def map between Parameters and I_SOC for
+        vars p2m and p2m;
+        vars z_ca and z_ca;
+        vars F and F;
+    enddef;
+
+    def map between P_SOC and I_SOC for
+        vars P_SOC and P_SOC;
+        vars Ca_er and Ca_er;
+    enddef;
+
+    def map between Nernst and I_SOC for
+        vars E_Ca and E_Ca;
+    enddef;
+
+    def map between Nernst and I_BK for
+        vars E_K and E_K;
+    enddef;
+
+    def map between Nernst and I_BNa for
+        vars E_Na and E_Na;
+    enddef;
+
+    def map between ICC_Membrane and I_BNa for
+        vars Vm and Vm;
+        vars I_BNa and I_BNa;
+    enddef;
+
+    def map between Ca_er and J_IPR for
+        vars Ca_er and Ca_er;
+        vars J_IPR and J_IPR;
+    enddef;
+
+    def map between J_SERCA and J_IPR for
+        vars J_SERCA and J_SERCA;
+    enddef;
+
+    def map between Volume and Ca_er for
+        vars volCyto and volCyto;
+        vars volER and volER;
+    enddef;
+
+    def map between I_SOC and Ca_er for
+        vars Ca_er and Ca_er;
+    enddef;
+
+    def map between Ca_er and J_SERCA for
+        vars fe and fe;
+        vars J_SERCA and J_SERCA;
+    enddef;
+
+    def map between Nernst and I_NSCC for
+        vars E_NSCC and E_NSCC;
+    enddef;
+
+    def map between I_NSCC and P_NSCC for
+        vars P_NSCC and P_NSCC;
+        vars Ca_i and Ca_i;
+    enddef;
+
+    def map between Volume and I_Ano1 for
+        vars volCyto and volCyto;
+    enddef;
+
+    def map between I_SOC and I_Ano1 for
+        vars J_SOC and J_SOC;
+    enddef;
+
+    def map between d_Ano1 and I_Ano1 for
+        vars Vm and Vm;
+        vars d_Ano1 and d_Ano1;
+        vars h_Ano1 and h_Ano1;
+        vars time and time;
+        vars volCyto and volCyto;
+        vars J_SOC and J_SOC;
+        vars Ca_i and Ca_i;
+        vars S_iAno1 and S_iAno1;
+    enddef;
+
+    def map between Nernst and I_Ano1 for
+        vars E_Cl and E_Cl;
+    enddef;
+
+    def map between y_bind and J_IPR for
+        vars K1 and K1;
+        vars K5 and K5;
+        vars IP3 and IP3;
+        vars y and y;
+        vars Ca_i and Ca_i;
+        vars time and time;
+    enddef;
+
+    def map between I_Ano1 and ICC_Membrane for
+        vars time and time;
+        vars d_Ano1 and d_Ano1;
+        vars I_Ano1 and I_Ano1;
+        vars Vm and Vm;
+        vars Ca_i and Ca_i;
+        vars S_iAno1 and S_iAno1;
+    enddef;
+
+    def map between I_NSCC and ICC_Membrane for
+        vars Vm and Vm;
+        vars I_NSCC and I_NSCC;
+        vars Ca_i and Ca_i;
+        vars S_iNSCC and S_iNSCC;
+    enddef;
+
+    def map between Ca_er and ICC_Membrane for
+        vars Ca_er and Ca_er;
+        vars time and time;
+    enddef;
+
+    def map between J_SERCA and ICC_Membrane for
+        vars fc and fc;
+        vars Ca_i and Ca_i;
+        vars J_SERCA and J_SERCA;
+    enddef;
+
+    def map between J_IPR and ICC_Membrane for
+        vars J_IPR and J_IPR;
+        vars Ca_i and Ca_i;
+        vars time and time;
+        vars S_eIP3 and S_eIP3;
+    enddef;
+
+    def map between I_stim and ICC_Membrane for
+        vars time and time;
+        vars I_stim and I_stim;
+    enddef;
+
+    def map between J_PMCA and ICC_Membrane for
+        vars J_PMCA and J_PMCA;
+        vars Ca_i and Ca_i;
+    enddef;
+
+    def map between Nernst and ICC_Membrane for
+        vars Ca_i and Ca_i;
+    enddef;
+
+    def map between I_CaT and ICC_Membrane for
+        vars time and time;
+        vars d_CaT and d_CaT;
+        vars f_CaT and f_CaT;
+        vars I_CaT and I_CaT;
+        vars Vm and Vm;
+        vars J_CaT and J_CaT;
+    enddef;
+
+    def map between I_SOC and ICC_Membrane for
+        vars I_SOC and I_SOC;
+        vars Vm and Vm;
+        vars J_SOC and J_SOC;
+    enddef;
+
+    def map between I_BK and ICC_Membrane for
+        vars I_BK and I_BK;
+        vars Vm and Vm;
+    enddef;
+
+    def map between Time and ICC_Membrane for
+        vars time and time;
+    enddef;
+
+    // SMC mapping 
+
+    def map between m_Na_SM and I_Na_SM for
+        vars Vm_SM and Vm_SM;
+        vars m_Na_SM and m_Na_SM;
+        vars time and time;
+        vars T_correction_Na and T_correction_Na;
+    enddef;
+
+    def map between h_Na_SM and I_Na_SM for
+        vars Vm_SM and Vm_SM;
+        vars h_Na_SM and h_Na_SM;
+        vars time and time;
+        vars T_correction_Na and T_correction_Na;
+    enddef;
+
+    def map between I_Na_SM and SM_Membrane for
+        vars Na_i and Na_i;
+        vars Vm_SM and Vm_SM;
+        vars I_Na_SM and I_Na_SM;
+        vars time and time;
+        vars RToF and RToF;
+        vars Na_o and Na_o;
+        vars T_correction_Na and T_correction_Na;
+    enddef;
+
+    def map between d_Ltype_SM and I_Ltype_SM for
+        vars Vm_SM and Vm_SM;
+        vars d_Ltype_SM and d_Ltype_SM;
+        vars time and time;
+        vars T_correction_Ca and T_correction_Ca;
+    enddef;
+
+    def map between f_Ltype_SM and I_Ltype_SM for
+        vars Vm_SM and Vm_SM;
+        vars f_Ltype_SM and f_Ltype_SM;
+        vars time and time;
+        vars T_correction_Ca and T_correction_Ca;
+    enddef;
+
+    def map between f_ca_Ltype_SM and I_Ltype_SM for
+        vars f_ca_Ltype_SM and f_ca_Ltype_SM;
+        vars Ca_i and Ca_i;
+        vars time and time;
+        vars T_correction_Ca and T_correction_Ca;
+    enddef;
+
+    def map between I_Ltype_SM and SM_Membrane for
+        vars Ca_i and Ca_i;
+        vars Vm_SM and Vm_SM;
+        vars I_Ltype_SM and I_Ltype_SM;
+        vars time and time;
+        vars RToF and RToF;
+        vars Ca_o and Ca_o;
+        vars T_correction_Ca and T_correction_Ca;
+    enddef;
+
+    def map between d_LVA_SM and I_LVA_SM for
+        vars Vm_SM and Vm_SM;
+        vars d_LVA_SM and d_LVA_SM;
+        vars time and time;
+        vars T_correction_Ca and T_correction_Ca;
+    enddef;
+
+    def map between f_LVA_SM and I_LVA_SM for
+        vars Vm_SM and Vm_SM;
+        vars f_LVA_SM and f_LVA_SM;
+        vars time and time;
+        vars T_correction_Ca and T_correction_Ca;
+    enddef;
+
+    def map between I_LVA_SM and SM_Membrane for
+        vars Ca_i and Ca_i;
+        vars Vm_SM and Vm_SM;
+        vars I_LVA_SM and I_LVA_SM;
+        vars time and time;
+        vars RToF and RToF;
+        vars Ca_o and Ca_o;
+        vars T_correction_Ca and T_correction_Ca;
+    enddef;
+
+    def map between xr1_SM and I_kr_SM for
+        vars Vm_SM and Vm_SM;
+        vars xr1_SM and xr1_SM;
+        vars time and time;
+        vars T_correction_K and T_correction_K;
+    enddef;
+
+    def map between xr2_SM and I_kr_SM for
+        vars Vm_SM and Vm_SM;
+        vars xr2_SM and xr2_SM;
+        vars time and time;
+        vars T_correction_K and T_correction_K;
+    enddef;
+
+    def map between I_kr_SM and SM_Membrane for
+        vars K_i and K_i;
+        vars Vm_SM and Vm_SM;
+        vars I_kr_SM and I_kr_SM;
+        vars time and time;
+        vars RToF and RToF;
+        vars K_o and K_o;
+        vars T_correction_K and T_correction_K;
+    enddef;
+
+    def map between xa1_SM and I_ka_SM for
+        vars Vm_SM and Vm_SM;
+        vars xa1_SM and xa1_SM;
+        vars time and time;
+        vars T_correction_K and T_correction_K;
+    enddef;
+
+    def map between xa2_SM and I_ka_SM for
+        vars Vm_SM and Vm_SM;
+        vars xa2_SM and xa2_SM;
+        vars time and time;
+        vars T_correction_K and T_correction_K;
+    enddef;
+
+    def map between I_ka_SM and SM_Membrane for
+        vars K_i and K_i;
+        vars Vm_SM and Vm_SM;
+        vars I_ka_SM and I_ka_SM;
+        vars time and time;
+        vars RToF and RToF;
+        vars K_o and K_o;
+        vars T_correction_K and T_correction_K;
+    enddef;
+
+    def map between d_BK_SM and I_BK_SM for
+        vars Vm_SM and Vm_SM;
+        vars Ca_i and Ca_i;
+        vars d_BK_SM and d_BK_SM;
+        vars time and time;
+    enddef;
+
+    def map between I_BK_SM and SM_Membrane for
+        vars K_i and K_i;
+        vars Ca_i and Ca_i;
+        vars Vm_SM and Vm_SM;
+        vars I_BK_SM and I_BK_SM;
+        vars time and time;
+        vars RToF and RToF;
+        vars K_o and K_o;
+        vars T_correction_BK and T_correction_BK;
+    enddef;
+
+    def map between x_SK_SM and I_SK_SM for
+        vars Vm_SM and Vm_SM;
+        vars Ca_i and Ca_i;
+        vars x_SK_SM and x_SK_SM;
+        vars time and time;
+    enddef;
+
+    def map between I_SK_SM and SM_Membrane for
+        vars K_i and K_i;
+        vars Ca_i and Ca_i;
+        vars Vm_SM and Vm_SM;
+        vars I_SK_SM and I_SK_SM;
+        vars time and time;
+        vars RToF and RToF;
+        vars K_o and K_o;
+        vars T_correction_BK and T_correction_BK;
+        vars S_iSK and S_iSK;
+    enddef;
+
+    def map between I_bk_SM and SM_Membrane for
+        vars K_i and K_i;
+        vars Vm_SM and Vm_SM;
+        vars I_bk_SM and I_bk_SM;
+        vars RToF and RToF;
+        vars K_o and K_o;
+    enddef;
+
+    def map between m_NSCC_SM and I_NSCC_SM for
+        vars Vm_SM and Vm_SM;
+        vars m_NSCC_SM and m_NSCC_SM;
+        vars time and time;
+    enddef;
+
+    def map between I_NSCC_SM and SM_Membrane for
+        vars K_i and K_i;
+        vars Na_i and Na_i;
+        vars Vm_SM and Vm_SM;
+        vars I_NSCC_SM and I_NSCC_SM;
+        vars time and time;
+        vars RToF and RToF;
+        vars K_o and K_o;
+        vars Na_o and Na_o;
+        vars Ca_i and Ca_i;
+    enddef;
+
+    def map between J_CaSR_SM and SM_Membrane for
+        vars J_CaSR_SM and J_CaSR_SM;
+        vars Ca_i and Ca_i;
+    enddef;
+
+    def map between SM_Membrane and Environment for
+        vars Ca_o and Ca_o;
+        vars Na_o and Na_o;
+        vars K_o and K_o;
+        vars Cl_o and Cl_o;
+        vars RToF and RToF;
+        vars FoRT and FoRT;
+        vars F and F;
+        vars T_correction_Ca and T_correction_Ca;
+        vars T_correction_Na and T_correction_Na;
+        vars T_correction_K and T_correction_K;
+        vars T_correction_BK and T_correction_BK;
+    enddef;
+
+    def map between Time and SM_Membrane for
+        vars time and time;
+    enddef;
+
+    def map between I_couple and SM_Membrane for
+        vars V_SMC and Vm_SM;
+        vars I_couple and I_couple;
+    enddef;
+
+    def map between I_couple and ICC_Membrane for
+        vars V_ICC and Vm;
+    enddef;
+
+    def map between neural_input and SM_Membrane for
+        vars S_iSK and S_iSK;
+    enddef;
+
+    def map between neural_input and ICC_Membrane for
+        vars S_eIP3 and S_eIP3;
+        vars S_iNSCC and S_iNSCC;
+        vars S_iAno1 and S_iAno1;
+        vars time and time;
+    enddef;
+
+    def map between neural_input and active_tension for
+        vars S_iCa50 and S_iCa50;
+    enddef;
+
+    def map between SM_Membrane and active_tension for
+        vars Ca_i and Ca_i_SM;
+    enddef;
+
+    // GROUPING 
+
+    def group as encapsulation for
+        comp SM_Membrane incl
+            comp I_Na_SM incl
+                comp m_Na_SM;
+                comp h_Na_SM;
+            endcomp;
+
+            comp I_Ltype_SM incl
+                comp d_Ltype_SM;
+                comp f_Ltype_SM;
+                comp f_ca_Ltype_SM;
+            endcomp;
+
+            comp I_LVA_SM incl
+                comp d_LVA_SM;
+                comp f_LVA_SM;
+            endcomp;
+
+            comp I_BK_SM incl
+                comp d_BK_SM;
+            endcomp;
+
+            comp I_kr_SM incl
+                comp xr1_SM;
+                comp xr2_SM;
+            endcomp;
+
+            comp I_ka_SM incl
+                comp xa1_SM;
+                comp xa2_SM;
+            endcomp;
+
+            comp I_SK_SM incl
+                comp x_SK_SM;
+            endcomp;
+
+            comp I_bk_SM;
+
+            comp I_NSCC_SM incl
+                comp m_NSCC_SM;
+            endcomp;
+
+            comp J_CaSR_SM;
+        endcomp;
+
+        comp ICC_Membrane incl
+            comp I_CaT incl
+                comp d_CaT;
+                comp f_CaT;
+            endcomp;
+
+            comp Parameters;
+            comp Volume;
+            comp Nernst;
+            comp I_BK;
+            comp I_BNa;
+            comp J_SERCA;
+            comp J_PMCA;
+            comp I_stim;
+
+            comp J_IPR incl
+                comp y_bind;
+            endcomp;
+
+            comp Ca_er;
+
+            comp I_SOC incl
+                comp P_SOC;
+            endcomp;
+
+            comp I_NSCC incl
+                comp P_NSCC;
+            endcomp;
+
+            comp I_Ano1 incl
+                comp d_Ano1;
+            endcomp;
+        endcomp;
+    enddef;
+enddef;

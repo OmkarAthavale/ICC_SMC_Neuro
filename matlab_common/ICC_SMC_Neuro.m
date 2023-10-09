@@ -1,6 +1,6 @@
 
 function [VOI, STATES, ALGEBRAIC, CONSTANTS] = ICC_SMC_Neuro(e, w, f_e, f_i, duration)
-   % Solves the combined ICC and SMC model with neurotransmission
+   % Solves the combined ICC and SMC model with neurotransmission. See ICC_SMC_Neuro_Explanation.txt for a key to variable names. 
    % INPUTS
    % e: 1 x 5 array of effector component weighting values in sequence
    %    [kiAno1, kiNSCC, kiCa50, kiSK, keIP3]. Only keIP3 may  e > 1. All
@@ -54,14 +54,6 @@ function [VOI, STATES, ALGEBRAIC, CONSTANTS] = solveModel(e, w, f_e, f_i, durati
     % Compute algebraic variables
     [RATES, ALGEBRAIC] = computeRates(VOI, STATES, CONSTANTS);
     ALGEBRAIC = computeAlgebraic(ALGEBRAIC, CONSTANTS, STATES, VOI);
-
-    % Plot state variables against variable of integration
-%     [LEGEND_STATES, LEGEND_ALGEBRAIC, LEGEND_VOI, LEGEND_CONSTANTS] = createLegends();
-%     figure();
-%     plot(VOI, STATES);
-%     xlabel(LEGEND_VOI);
-%     l = legend(LEGEND_STATES);
-%     set(l,'Interpreter','none');
 end
 
 function [LEGEND_STATES, LEGEND_ALGEBRAIC, LEGEND_VOI, LEGEND_CONSTANTS] = createLegends()
