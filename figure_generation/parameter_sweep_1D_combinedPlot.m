@@ -5,6 +5,7 @@
 % --- INPUTS ---
 var_seq = 1:5; % variable index to sweep (max 2)
 n = 51; % number of points to sweep (all variables same)
+non_sweeped_values = [0.329454438664630,0.773384113014197, 0.396950911630671, 0.303891480696183, 1]; % [kiAno1, kiNSCC, kiCa50, kiSK, keIP3]. Fitted: [0.]. Zeros: [0 0 0 0 0]
 % --------------
 
 % parameter info
@@ -17,7 +18,7 @@ for k = 1:length(var_seq)
     sweep_var = var_seq(k); % select sweep variable
     
     weights = [3.149566984343386, 1.178185077905521, 5]; % these make no difference here, w_i=w_e=1
-    effect_vals = zeros(n, 5);
+    effect_vals = non_sweeped_values.*ones(n, 5);
     effect_vals(:, sweep_var) = linspace(sweep_domain(1, sweep_var), sweep_domain(2, sweep_var), n);
     
     % initialise results
