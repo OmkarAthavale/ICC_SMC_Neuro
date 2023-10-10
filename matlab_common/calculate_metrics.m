@@ -26,7 +26,7 @@ end
 % identify events onsets
 res_x = rescale(movmean(diff(x), 40));
 pos_x = x-min(x);
-[~, i_diff] = findpeaks(res_x.*(res_x>0.9), 'MinPeakProminence', 0.5);
+[~, i_diff] = findpeaks(res_x.*(res_x>0.8), 'MinPeakProminence', 0.5);
 
 % approximately mask out non-events period
 i = [];
