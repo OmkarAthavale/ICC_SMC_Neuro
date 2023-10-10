@@ -995,18 +995,18 @@
         <variable name="w_iSMC" units="dimensionless"/>
         <variable name="w_e" units="dimensionless"/>
         <variable initial_value="10" name="f_max" units="Hertz"/>
-        <variable initial_value="0.326" name="k_iAno1" units="dimensionless"/>
-        <variable initial_value="0.775" name="k_iNSCC" units="dimensionless"/>
-        <variable initial_value="0.882" name="k_iCa50" units="dimensionless"/>
-        <variable initial_value="0.441" name="k_iSK" units="dimensionless"/>
-        <variable initial_value="0.92" name="k_eIP3" units="dimensionless"/>
+        <variable initial_value="0.329454438664630" name="k_iAno1" units="dimensionless"/>
+        <variable initial_value="0.773384113014197" name="k_iNSCC" units="dimensionless"/>
+        <variable initial_value="0.396950911630671" name="k_iCa50" units="dimensionless"/>
+        <variable initial_value="0.303891480696183" name="k_iSK" units="dimensionless"/>
+        <variable initial_value="1.0" name="k_eIP3" units="dimensionless"/>
         <variable name="S_iAno1" public_interface="out" units="dimensionless"/>
         <variable name="S_iNSCC" public_interface="out" units="dimensionless"/>
         <variable name="S_iCa50" public_interface="out" units="dimensionless"/>
         <variable name="S_iSK" public_interface="out" units="dimensionless"/>
         <variable name="S_eIP3" public_interface="out" units="dimensionless"/>
-        <variable initial_value="3.17" name="p_iICC" units="dimensionless"/>
-        <variable initial_value="1.17" name="p_iSMC" units="dimensionless"/>
+        <variable initial_value="3.14933156638040" name="p_iICC" units="dimensionless"/>
+        <variable initial_value="0.122756641774948" name="p_iSMC" units="dimensionless"/>
         <variable initial_value="5" name="p_e" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
