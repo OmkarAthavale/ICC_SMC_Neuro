@@ -8,8 +8,8 @@ n = 21; % number of points to sweep (all variables same)
 
 % parameter info
 names = {'f_i', 'f_e', 'f_i & f_e'};
-effect_vals = [0.320920220620083,0.776439073613402,0.399007024312299,0.302229718784617, 1];
-weighting = [3.149932963402147, 0.121722979829497, 5]; 
+effect_vals = [0.329454438664630,0.773384113014197,0.396950911630671,0.303891480696183, 1];
+weighting = [3.14933156638040, 0.122756641774948, 5]; 
 
 f_e = [zeros(1, n); linspace(0, 10, n); linspace(0, 10, n)]';
 f_i = [linspace(0, 10, n); zeros(1, n); linspace(0, 10, n)]';
@@ -44,7 +44,7 @@ set(h, 'position', [18,18,7,11] );
 ax(1) = subplot(2,1,2);
 colororder(colours);
 plot(plot_x, f, 'LineWidth', 1.5);
-xlim([0, 1])
+xlim([0, 10])
 ylim([0, 7])
 ylabel('Frequency (cpm)')
 xlabel(sprintf('Stimulation frequency (Hz)'));
@@ -52,7 +52,7 @@ xlabel(sprintf('Stimulation frequency (Hz)'));
 ax(2) = subplot(2,1,1);
 colororder(colours)
 plot(plot_x, plateau_p, 'LineWidth', 1.5);
-xlim([0 1])
+xlim([0 10])
 ylim([0, 50])
 set(ax(2), 'XTickLabels', {})
 ylabel('Tension (kPa)')
