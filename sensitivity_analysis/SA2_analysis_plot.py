@@ -9,10 +9,10 @@ print("Def SA problem")
 problemDef = {
     'num_vars': 5,
     'names': ['k_iAno1', 'k_iNSCC', 'k_iCa50', 'k_iSK', 'k_eIP3'],
-    'bounds': [[0.25355, 0.35258],
-               [0.76517, 0.79896],
-               [0.38393, 0.40164],
-               [0.29620, 0.33465],
+    'bounds': [[0.28873, 0.34498],
+               [0.76787, 0.78711],
+               [0.37868, 0.40218],
+               [0.29319, 0.34290],
                [0.82, 1]
               ]
 }
@@ -46,4 +46,16 @@ axes[1, 1].bar(np.array(np.linspace(0, problemDef['num_vars']-1, problemDef['num
 axes[1, 1].set_ylim(0, 1.2)
 axes[1, 1].set_yticklabels([])
 
-fig.savefig('../generated_figures/SA_bar_charts.svg')
+fig.savefig('../generated_fig/SA_bar_charts.svg')
+
+total_amp, first_amp, second_amp = Si_amp.to_df()
+print('Amplitude')
+print(total_amp)
+print(first_amp)
+print(second_amp)
+
+total_freq, first_freq, second_freq = Si_freq.to_df()
+print('Frequency')
+print(total_freq)
+print(first_freq)
+print(second_freq)

@@ -22,7 +22,7 @@ peak_p_ICC = zeros(n, 1);
 plateau_p_ICC = zeros(n, 1);
 
 % simulate with sampled parameter values in parallel
-parpool(47);
+parpool(32);
 parfor i = 1:n
     [t, s, a] = ICC_SMC_Neuro(effect_vals(i, :), weighting, f_e, f_i);
     T = a(:, 7);
