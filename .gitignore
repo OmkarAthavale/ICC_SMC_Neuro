@@ -3,3 +3,4 @@ data/*
 generated_fig/*
 *.txt
 *.svg
+.idea/*

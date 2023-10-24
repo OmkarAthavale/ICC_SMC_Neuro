@@ -5,18 +5,16 @@
 
 % ---INPUTS---
 % data inputs
-smc_data_path = '../data/optim_SMC_230504200253';
-icc_data_path = '../data/optim_ICC_230502001619';
+smc_data_path = '../data/optim_SMC_data';
+icc_data_path = '../data/optim_ICC_data';
 
 % plot options
 histogram_edges = 0:0.02:1;
 y_limits = [0 1];
 save_plot = true;
 
-k_iAno1_cluster_division = 0.2;
-
 % ------------
-addpath(genpath('../'));
+addpath(genpath('../'))
 
 % load and combine data
 icc = load(icc_data_path);
@@ -93,6 +91,15 @@ median(sol),...
 100.*(quantile(fval, 0.75, 1)));
 
 fprintf('\n')
+
+% define cluster threshold
+% k_iAno1_cluster_division = 0.2;
+
+[z, y] = ksdensity(sort(icc.sol(:, 1)), 'bandwidth', 0.05);
+figure('Name', 'Kernel density estimate to select cluster threshold'); 
+plot(y, z)
+
+k_iAno1_cluster_division = input('Define cluster threshold from probability estimate plot: ');
 
 % cluster masks
 low_mask = icc.sol(:, 1)<k_iAno1_cluster_division & icc.sol(:,1)< 0.38 & icc.sol(:, 3)>3;

@@ -3,21 +3,29 @@
 %%% Plot sweeps across k_xXXXX parameters from 0 - 1
 
 % --- INPUTS ---
-var_seq = 5; % variable index to sweep (max 2)
+var_seq = 1:5; % variable index to sweep (max 2)
 n = 51; % number of points to sweep (all variables same)
 % --------------
+non_sweeped_values = [0 0 0 0 0];
+non_sweep = input('0: non-sweep params are 0; 1: non-sweeped params are fitted values --- ');
+switch non_sweep % [kiAno1, kiNSCC, kiCa50, kiSK, keIP3]. 
+	case 0
+		non_sweeped_values = [0 0 0 0 0];  % this is the paper figure
+	case 1
+		non_sweeped_values = [0.329454438664630,0.773384113014197, 0.396950911630671, 0.303891480696183, 1]; % this was used for the response to reviewers
+end
 
 % parameter info
 names = {'k_{iAno1}', 'k_{iNSCC}', 'k_{iCa50}', 'k_{iSK}', 'k_{eIP3}', 'p_{iICC}', 'p_{iSMC}', 'p_{e}',};
 sweep_domain = repmat([0; 1], 1, 5); % range to sweep one column per variable
-x_i = ones(1, 5);
-x_e = ones(1, 5);
+f_i = 10.*ones(1, 5);
+f_e = 10.*ones(1, 5);
 
 for k = 1:length(var_seq)
     sweep_var = var_seq(k); % select sweep variable
     
-    weights = [3.149566984343386, 1.178185077905521, 5]; % these make no difference here, w_i=w_e=1
-    effect_vals = zeros(n, 5);
+    weights = [1 1 1]; % these make no difference here, w_i=w_e=1
+    effect_vals = non_sweeped_values.*ones(n, 5);
     effect_vals(:, sweep_var) = linspace(sweep_domain(1, sweep_var), sweep_domain(2, sweep_var), n);
     
     % initialise results
@@ -26,8 +34,8 @@ for k = 1:length(var_seq)
     plateau_p = zeros(n, 1);
     
     % run simulations
-    for i = 1:n
-        [t, s, a] = ICC_SMC_Neuro(effect_vals(i, :), weights, x_e(sweep_var), x_i(sweep_var));
+    parfor i = 1:n
+        [t, s, a] = ICC_SMC_Neuro(effect_vals(i, :), weights, f_e(sweep_var), f_i(sweep_var));
         T = a(:, 7);
         Vm_ICC = s(:,3);
         Vm_SMC = s(:,1);
@@ -47,12 +55,12 @@ for i = 1:nF
 end
 
 % offsets set to space out traces, about 1.5x initial value
-freq_offset = 4;        %cpm
-tension_offset = 65;    %kPa
+freq_offset = 0;        %cpm
+tension_offset = 0;    %kPa
 
 % figure generation
 h = figure('Units', 'centimeters');
-set(h, 'position', [18,18,9,11] );
+set(h, 'position', [10,10,9,11] );
 
 % plot frequency
 ax(1) = subplot(2,1,2);
@@ -77,38 +85,31 @@ end
 % Axis 1 (frequency, bottom axis)
 axes(ax(1));
 xlim([min(d{i}.effect_vals(:, d{i}.sweep_var)), max(d{i}.effect_vals(:, d{i}.sweep_var))])
-ylim([-20, 3])
+ylim([0 6])
 ylabel('Frequency (cpm)')
-xlabel(sprintf('Scaling constants'));
-[~, sorterInd] = sort(f_ends_number(:, 1));
-set(ax(1).YAxis, 'TickLabel',fliplr(d{i}.names(1:5)))
-set(ax(1), 'XTick', [0 0.5 1], 'YTick',sort(f_ends_number(:, 1)),'YTickLabelMode', 'manual')
+xlabel(sprintf('Parameter value'));
 
+set(ax(1), 'XTick', [0 0.5 1]);
 box off
 % add end labels
-[~, sorterInd] = sort(f_ends_number(:, 2));
-tmp = axes('Position', ax(1).Position, 'xlim', ax(1).XLim, 'XTick', [], 'ylim', ax(1).YLim, 'color', 'none','YTickLabelMode', 'manual', 'YTick',sort(f_ends_number(:, 1)), 'YAxisLocation', 'right');
-set(tmp.YAxis, 'TickLabel',sprintf('%+.0f%%\n', (round(f_ends(sorterInd, 2)./f_ends(sorterInd, 1), 2)-1).*100))
-box off
+for i = 1:nF
+    text(1.01, f_ends_number(i, 2), d{i}.names(i))
+end
 
 % Axis 2 (tension, top axis)
 axes(ax(2));
 xlim([min(d{i}.effect_vals(:, d{i}.sweep_var)), max(d{i}.effect_vals(:, d{i}.sweep_var))])
-ylim([-300 3])
+ylim([0 50])
 
 ylabel('Tension (kPa)')
 
-[~, sorterInd] = sort(plateau_ends_number(:, 1));
-set(ax(2).YAxis, 'TickLabel',fliplr(d{i}.names(1:5)))
-set(ax(2), 'XTickLabels', {}, 'YTick',sort(plateau_ends_number(:, 1)),'YTickLabelMode', 'manual')
+set(ax(2), 'XTickLabels', {});
 
 box off
 % add end labels
-[~, sorterInd] = sort(plateau_ends_number(:, 2));
-tmp = axes('Position', ax(2).Position, 'XTick', [], 'xlim', ax(2).XLim, 'ylim', ax(2).YLim, 'color', 'none','YTickLabelMode', 'manual', 'YTick',sort(plateau_ends_number(:, 1)), 'YAxisLocation', 'right');
-set(tmp.YAxis, 'TickLabel',sprintf('%+.0f%%\n', (round(plateau_ends(sorterInd, 2)./plateau_ends(sorterInd, 1), 2)-1).*100))
-
-box off
+for i = 1:nF
+    text(1.01, plateau_ends_number(i, 2), d{i}.names(i))
+end
 
 set(h, 'PaperPositionMode', 'auto')
 saveas(h, sprintf('../generated_fig/1D_multiSweeps_%d_%d_%s', freq_offset, tension_offset, datestr(datetime, 'yymmddHHMMSS')), 'svg')

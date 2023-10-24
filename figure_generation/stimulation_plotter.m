@@ -5,9 +5,9 @@
 addpath('../matlab_common/')
 
 % run simulations with stim for 60 seconds
-[t01, T01, Vm_ICC01, Vm_SMC01] = run_sim_stim(0, 1);
-[t10, T10, Vm_ICC10, Vm_SMC10] = run_sim_stim(1, 0);
-[t11, T11, Vm_ICC11, Vm_SMC11] = run_sim_stim(1, 1);
+[t01, T01, Vm_ICC01, Vm_SMC01] = run_sim_stim(0, 10);
+[t10, T10, Vm_ICC10, Vm_SMC10] = run_sim_stim(10, 0);
+[t11, T11, Vm_ICC11, Vm_SMC11] = run_sim_stim(10, 10);
 
 % plot VmICC and tension for each stimulation
 h = figure('Units', 'centimeters');
@@ -70,10 +70,10 @@ xlabel('Time (s)');
 set(h, 'PaperPositionMode', 'auto')
 saveas(h, sprintf('../generated_fig/stimulation_varying_%s', datestr(datetime, 'yymmddHHMMSS')), 'svg')
 
-function [t, T, Vm_ICC, Vm_SMC] = run_sim_stim(x_e, x_i)
+function [t, T, Vm_ICC, Vm_SMC] = run_sim_stim(f_e, f_i)
 
 % run simulation
-[t, s, a] = ICC_SMC_Neuro_Tvar(x_e, x_i);
+[t, s, a] = ICC_SMC_Neuro_Tvar(f_e, f_i);
 
 T = a(:, 48);
 Vm_ICC = s(:,3); 

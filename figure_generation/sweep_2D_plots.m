@@ -1,7 +1,7 @@
 %%% sweep_2D_plots.m
 %%% Omkar N. Athavale, May 2023
 %%% Plot results from 1D or 2D parameter sweeps
-%%% Run the data load section first, then the seciton of the figure to plot
+%%% Run the data load section first, then the section of the figure to plot
 
 %% Data load
 data_path = '../data/2DSweep_230429201029';
