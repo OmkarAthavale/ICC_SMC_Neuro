@@ -10,7 +10,7 @@ names = {'k_{iAno1}', 'k_{iNSCC}', 'k_{iCa50}', 'k_{iSK}', 'k_{eIP3}', 'p_{iICC}
 n = 5; % number of equally spaced values in the sweep
 effect_var = [1, 2]; % which k parameter(s) to sweep
 duration = [0 120000];
-weights = [3.149566984343386, 1.178185077905521, 1]; % these only matter if f_i or f_e are not 1 or 0.
+weights = [1, 1, 1]; % dummy values since these only matter if f_i or f_e are not 10 Hz or 0 Hz.
 effect_vals = zeros(n, 5);
 effect_vals(:, effect_var(1)) = linspace(0, 1, n);
 

@@ -21,10 +21,14 @@ f = zeros(4, 1);
 peak_p = zeros(4, 1);
 plateau_p = zeros(4, 1);
 
+%%%% SELECT A SET OF STEP 1 FITTED VALUES TO USE IN STEP 2. %%%%%
+%%%% The low kiAno1 cluster was used in the manuscript and model The high kiAno1 cluster was tested as well for reviewers. %%%%%
+
+%%% high kiAno1 cluster
 % weighting = [3.34182038994190, effect_vals(end), 1];  % fixed parameters
 % effect_vals = [0.329454438664630,0.773384113014197, effect_vals(1:end-1), 0]; % fixed parameters
 
-% uncomment for low kiAno1 cluster
+%%% low kiAno1 cluster
 weighting = [3.14933156638040, effect_vals(end), 1];  % fixed parameters
 effect_vals = [0.0914532418255071,0.844691701303740, effect_vals(1:end-1), 0]; % fixed parameters
 

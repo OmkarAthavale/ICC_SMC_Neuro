@@ -96,7 +96,7 @@ fprintf('\n')
 % k_iAno1_cluster_division = 0.2;
 
 [z, y] = ksdensity(sort(icc.sol(:, 1)), 'bandwidth', 0.05);
-figure('Name', 'Kernel desnity estimate to select cluster threshold'); 
+figure('Name', 'Kernel density estimate to select cluster threshold'); 
 plot(y, z)
 
 k_iAno1_cluster_division = input('Define cluster threshold from probability estimate plot: ');

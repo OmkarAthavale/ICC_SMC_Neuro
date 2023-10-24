@@ -24,9 +24,6 @@ if length(sweep_var) == 2 % two changing dimenisons
     
 elseif length(sweep_var) == 1 % one changing dimension
     effect_vals = zeros(n, 5);
-%     effect_vals(:, sweep_var) = linspace(0, 1, n);
-%     effect_vals = [0.627769856911043	0.776142555889738	0.396950911630671	0.228026943965982 1];
-    
     weights = [3.14933156638040, 0.122756641774948, 5];
     effect_vals = ones(n, 5).*[0.329454438664630,0.773384113014197, 0.396950911630671,0.303891480696183, 1.0];
     
