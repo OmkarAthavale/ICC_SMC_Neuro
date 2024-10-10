@@ -48,10 +48,10 @@ end
 
 %% Single var change plots combined
 % read in all saved results
-files = ls('../data/Multi_1DSweep_*');
-nF = size(files, 1);
+files = splitlines(ls('../data/Multi_1DSweep_*'));
+nF = size(files, 1)-1;
 for i = 1:nF
-    d{i} = load(['../data/', files(i, :)]);
+    d{i} = load([files{i}]);
 end
 
 % offsets set to space out traces, about 1.5x initial value
