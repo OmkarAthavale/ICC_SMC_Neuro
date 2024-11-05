@@ -37,13 +37,22 @@ for i = 1:n
     [tSMC, Vm_SMC] = start_alignment(t0, s(:,1), [84000, 120000]) ;
     
     subplot(2,1,1);
-    
+    if Vm_ICC(3000)-Vm_ICC(1) < 5
+        lstyle = 'k--';
+    else
+        lstyle = 'k';
+    end
     plot(tICC./1000, Vm_ICC, 'k', 'LineWidth', 0.5);
     
     hold on;
     
     subplot(2,1,2);
-    plot(tT./1000, T, 'k', 'LineWidth', 0.5);
+    if T(3000)-T(1) < 1
+        lstyle = 'k--';
+    else
+        lstyle = 'k';
+    end
+    plot(tT./1000, T, lstyle, 'LineWidth', 0.5);
     hold on;
 end
 

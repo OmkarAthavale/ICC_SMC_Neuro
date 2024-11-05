@@ -9,6 +9,7 @@ n = 2; % number of points to sweep (all variables same)
 f_i = 10.*ones(1, n);
 f_e = zeros(1, n);
 % --------------
+addpath('../matlab_common/')
 
 names = {'k_{iAno1}', 'k_{iNSCC}', 'k_{iCa50}', 'k_{iSK}', 'k_{eIP3}', 'p_{iICC}', 'p_{iSMC}', 'p_{e}',};
 
