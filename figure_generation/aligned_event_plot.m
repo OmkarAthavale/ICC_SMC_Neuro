@@ -59,13 +59,13 @@ end
 set(ax(1), 'XLim', [0 6], 'YLim', [-70 -20], 'XTickLabels', {});
 ax(1).YLabel.String = 'V_{ICC} (mV)';
 set(ax(2), 'XLim', [0 6], 'YLim', [0 50]);
-lgd2 = legend(plV, cellfun(@(x) (sprintf('%.2f, ', x(1:length(effect_var)))), mat2cell(effect_vals, ones(n, 1)), 'UniformOutput', 0), 'Location', 'eastoutside');
+lgd2 = legend(plV, cellfun(@(x) (sprintf('%.2f, ', x(effect_var))), mat2cell(effect_vals, ones(n, 1)), 'UniformOutput', 0), 'Location', 'eastoutside');
 lgd2.Title.String = sprintf('%s, ', names{effect_var});
 
 ax(2).XLabel.String = 'Time (s)';
-ax(2).YLabel.String = 'Tension (mN)';
+ax(2).YLabel.String = 'Tension (kPa)';
 linkaxes(ax, 'x')
-lgd2 = legend(plV, cellfun(@(x) (sprintf('%.2f, ', x(1:length(effect_var)))), mat2cell(effect_vals, ones(n, 1)), 'UniformOutput', 0), 'Location', 'eastoutside');
+lgd2 = legend(plT, cellfun(@(x) (sprintf('%.2f, ', x(effect_var))), mat2cell(effect_vals, ones(n, 1)), 'UniformOutput', 0), 'Location', 'eastoutside');
 lgd2.Title.String = sprintf('%s, ', names{effect_var});
 
 if length(effect_var) > 1
