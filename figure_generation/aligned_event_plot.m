@@ -22,7 +22,7 @@ f_e = 0;
 f_i = 10;
 
 h = figure('Units', 'centimeters');
-set(h, 'position', [18,18,7,11] );
+set(h, 'position', [18,18,10,11] );
 
 ax(1) = subplot(2,1,1);
 colororder([1 1 1] .* linspace(0, 0.75, n)')
@@ -38,30 +38,35 @@ for i = 1:n
     
     subplot(2,1,1);
     if Vm_ICC(3000)-Vm_ICC(1) < 5
-        lstyle = 'k--';
+        lstyle = '--';
     else
-        lstyle = 'k';
+        lstyle = '-';
     end
-    plot(tICC./1000, Vm_ICC, 'k', 'LineWidth', 0.5);
+    plV(i) = plot(tICC./1000, Vm_ICC, 'LineStyle', lstyle, 'LineWidth', 0.5);
     
     hold on;
     
     subplot(2,1,2);
     if T(3000)-T(1) < 1
-        lstyle = 'k--';
+        lstyle = '--';
     else
-        lstyle = 'k';
+        lstyle = '-';
     end
-    plot(tT./1000, T, lstyle, 'LineWidth', 0.5);
+    plT(i) = plot(tT./1000, T, 'LineStyle', lstyle, 'LineWidth', 0.5);
     hold on;
 end
 
 set(ax(1), 'XLim', [0 6], 'YLim', [-70 -20], 'XTickLabels', {});
 ax(1).YLabel.String = 'V_{ICC} (mV)';
 set(ax(2), 'XLim', [0 6], 'YLim', [0 50]);
+lgd2 = legend(plV, cellfun(@(x) (sprintf('%.2f, %.2f', x(1), x(2))), mat2cell(effect_vals, ones(n, 1)), 'UniformOutput', 0), 'Location', 'eastoutside');
+lgd2.Title.String = sprintf('%s, %s', names{effect_var(1)}, names{effect_var(2)});
+
 ax(2).XLabel.String = 'Time (s)';
 ax(2).YLabel.String = 'Tension (mN)';
 linkaxes(ax, 'x')
+lgd2 = legend(plT, cellfun(@(x) (sprintf('%.2f, %.2f', x(1), x(2))), mat2cell(effect_vals, ones(n, 1)), 'UniformOutput', 0), 'Location', 'eastoutside');
+lgd2.Title.String = sprintf('%s, %s', names{effect_var(1)}, names{effect_var(2)});
 
 if length(effect_var) > 1
     saveFile = sprintf('../generated_fig/event_sweep_%s_%s_%s', names{effect_var(1)}, names{effect_var(2)}, datestr(datetime, 'yymmddHHMMSS'));
