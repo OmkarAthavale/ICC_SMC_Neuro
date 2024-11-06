@@ -6,8 +6,11 @@
 var_seq = 1:5; % variable index to sweep (max 2)
 n = 51; % number of points to sweep (all variables same)
 % --------------
+
+addpath('../matlab_common/')
+
 non_sweeped_values = [0 0 0 0 0];
-non_sweep = input('0: non-sweep params are 0; 1: non-sweeped params are fitted values --- ');
+non_sweep = input('Select a choice for the value of non-sweep parameters\n0: non-sweep params are 0 (as in paper)\n1: non-sweep params are fitted values --- (as in JNE reviewer response)\n');
 switch non_sweep % [kiAno1, kiNSCC, kiCa50, kiSK, keIP3]. 
 	case 0
 		non_sweeped_values = [0 0 0 0 0];  % this is the paper figure
@@ -48,10 +51,18 @@ end
 
 %% Single var change plots combined
 % read in all saved results
-files = splitlines(ls('../data/Multi_1DSweep_*'));
-nF = size(files, 1)-1;
-for i = 1:nF
-    d{i} = load([files{i}]);
+if ispc
+    files = ls('../data/Multi_1DSweep_*');
+    nF = size(files, 1);
+    for i = 1:nF
+        d{i} = load(['../data/', files(i, :)]);
+    end
+else
+    files = splitlines(ls('../data/Multi_1DSweep_*'));
+    nF = size(files, 1)-1;
+    for i = 1:nF
+        d{i} = load([files{i}]);
+    end
 end
 
 % offsets set to space out traces, about 1.5x initial value
@@ -66,7 +77,7 @@ set(h, 'position', [10,10,9,11] );
 ax(1) = subplot(2,1,2);
 hold on
 for i = 1:nF
-    plot(d{i}.effect_vals(:, d{i}.sweep_var), d{i}.f-freq_offset*i, 'k', 'LineWidth', 1.5); 
+    pLV(i) = plot(d{i}.effect_vals(:, d{i}.sweep_var), d{i}.f-freq_offset*i, 'LineWidth', 1.5); 
     yline(d{i}.f(1)-freq_offset*i, 'Color', [0.5, 0.5, 0.5], 'LineStyle', '--');
     f_ends_number(i, :) = d{i}.f([1, end])-freq_offset*i;
     f_ends(i, :) = d{i}.f([1, end]);
@@ -76,7 +87,7 @@ ax(2) = subplot(2,1,1);
 
 hold on
 for i = 1:nF
-    plot(d{i}.effect_vals(:, d{i}.sweep_var), d{i}.plateau_p-tension_offset*i, 'k', 'LineWidth', 1.5);
+    pLT(i) = plot(d{i}.effect_vals(:, d{i}.sweep_var), d{i}.plateau_p-tension_offset*i, 'LineWidth', 1.5);
     yline(d{i}.plateau_p(1)-tension_offset*i, 'Color', [0.5, 0.5, 0.5], 'LineStyle', '--');
     plateau_ends_number(i, :) = d{i}.plateau_p([1, end])-tension_offset*i;
     plateau_ends(i, :) = d{i}.plateau_p([1, end]);
@@ -92,9 +103,10 @@ xlabel(sprintf('Parameter value'));
 set(ax(1), 'XTick', [0 0.5 1]);
 box off
 % add end labels
-for i = 1:nF
-    text(1.01, f_ends_number(i, 2), d{i}.names(i))
-end
+% for i = 1:nF
+%     text(1.01, f_ends_number(i, 2), d{i}.names(i))
+% end
+legend(pLV, d{1}.names, 'Location', 'eastoutside')
 
 % Axis 2 (tension, top axis)
 axes(ax(2));
@@ -107,9 +119,10 @@ set(ax(2), 'XTickLabels', {});
 
 box off
 % add end labels
-for i = 1:nF
-    text(1.01, plateau_ends_number(i, 2), d{i}.names(i))
-end
+% for i = 1:nF
+%     text(1.01, plateau_ends_number(i, 2), d{i}.names(i))
+% end
+legend(pLT, d{1}.names, 'Location', 'eastoutside')
 
 set(h, 'PaperPositionMode', 'auto')
 saveas(h, sprintf('../generated_fig/1D_multiSweeps_%d_%d_%s', freq_offset, tension_offset, datestr(datetime, 'yymmddHHMMSS')), 'svg')

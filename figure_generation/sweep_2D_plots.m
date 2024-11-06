@@ -4,6 +4,8 @@
 %%% Run the data load section first, then the section of the figure to plot
 
 %% Data load
+addpath('../matlab_common/')
+
 data_path = '../data/2DSweep_230429201029';
 
 load(data_path)
