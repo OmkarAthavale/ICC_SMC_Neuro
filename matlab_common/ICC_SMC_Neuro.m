@@ -1,5 +1,5 @@
 
-function [VOI, STATES, ALGEBRAIC, CONSTANTS] = ICC_SMC_Neuro(e, w, f_e, f_i, duration)
+function [VOI, STATES, ALGEBRAIC, CONSTANTS] = ICC_SMC_NeuroBidir(e, w, f_e, f_i, duration)
    % Solves the combined ICC and SMC model with neurotransmission. See ICC_SMC_Neuro_Explanation.txt for a key to variable names. 
    % INPUTS
    % e: 1 x 5 array of effector component weighting values in sequence
@@ -611,7 +611,7 @@ function [RATES, ALGEBRAIC] = computeRates(VOI, STATES, CONSTANTS)
     ALGEBRAIC(:,58) = ( STATES(:,21).*CONSTANTS(:,146).*1.00000)./(1.00000+power((ALGEBRAIC(:,56) - STATES(:,21))./ALGEBRAIC(:,54), 2.00000));
     ALGEBRAIC(:,59) =  CONSTANTS(:,96).*(STATES(:,21) - ALGEBRAIC(:,58)).*(STATES(:,3) - CONSTANTS(:,130));
     ALGEBRAIC(:,60) =  CONSTANTS(:,118).*(STATES(:,3) - CONSTANTS(:,131));
-    ALGEBRAIC(:,61) = ALGEBRAIC(:,34)+ALGEBRAIC(:,59)+ALGEBRAIC(:,28)+ALGEBRAIC(:,38)+ALGEBRAIC(:,60)+ALGEBRAIC(:,47)+ALGEBRAIC(:,41);
+    ALGEBRAIC(:,61) = ALGEBRAIC(:,34)+ALGEBRAIC(:,59)+ALGEBRAIC(:,28)+ALGEBRAIC(:,38)+ALGEBRAIC(:,60)+ALGEBRAIC(:,47)+ALGEBRAIC(:,41)+ALGEBRAIC(:,1);
     RATES(:,3) = ( - ALGEBRAIC(:,61)./CONSTANTS(:,119)).*0.00100000;
    RATES = RATES';
 end
