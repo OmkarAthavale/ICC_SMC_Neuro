@@ -66,6 +66,7 @@ ylim([0 50])
 xlabel('Time (s)');
 
 
+
 % save figure
 set(h, 'PaperPositionMode', 'auto')
 saveas(h, sprintf('../generated_fig/stimulation_varying_%s', datestr(datetime, 'yymmddHHMMSS')), 'svg')
